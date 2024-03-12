@@ -1,0 +1,8 @@
+version: "3"
+services:
+  backend:
+    container_name: Core-nest-backend
+    build: .
+    ports:
+     - 1067:5438
+    restart: always
