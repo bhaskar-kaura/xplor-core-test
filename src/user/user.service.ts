@@ -1,24 +1,25 @@
 // src/user/user.service.ts
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schema/user.schema';
 import { Model } from 'mongoose';
-import { OtpDto, PhoneNumberDto } from './dto/phone-number.dto';
-import { TwilioService } from '../twilio/twilio.service';
-import { Persona } from './interfaces/user-details.interface';
+import { PhoneNumberDto } from './dto/phone-number.dto';
 import { ResponseUtilsService } from '../common/utils/response-utils.service';
-import { CustomMessage } from '../common/enums/message';
+import { GetUrl } from '../common/utils';
+import { HttpService } from '@nestjs/axios';
+import { AssignRoleDto, VerifyOtpDto } from './dto';
 
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
-  private twilioClient: TwilioService;
   private globalOtp: string;
   private responseUtilsService: ResponseUtilsService;
-  constructor(@InjectModel(User.name) private readonly userModel: Model<User>) {
-    this.twilioClient = new TwilioService();
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+    private readonly getUrl: GetUrl,
+    private readonly httpService: HttpService,
+  ) {
     this.globalOtp = Math.floor(1000 + Math.random() * 9000) as unknown as string;
     this.responseUtilsService = new ResponseUtilsService();
   }
@@ -43,34 +44,88 @@ export class UserService {
     }
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, token: string) {
     try {
-      const user = await this.userModel.findById(id).exec();
-      if (!user) {
-        throw new Error('User not found');
-      }
-
+      return (
+        await this.httpService.axiosRef.get(this.getUrl.getUserProfileUrl + `/${id}`, {
+          headers: {
+            Authorization: token,
+          },
+        })
+      ).data;
+    } catch (error) {
+      this.logger.error('Failed to fetch userDetails', error);
+      throw error;
+    }
+  }
+  async getUserJourney(id: string, token: string) {
+    try {
+      return (
+        await this.httpService.axiosRef.get(this.getUrl.getUserJourneyUrl + `/${id}`, {
+          headers: {
+            Authorization: token,
+          },
+        })
+      ).data;
+    } catch (error) {
+      this.logger.error('Failed to fetch userDetails', error);
+      throw error;
+    }
+  }
+  async findRoles(token: string) {
+    try {
+      const x = (await this.httpService.axiosRef.get(this.getUrl.getRolesUrl, { headers: { Authorization: token } }))
+        .data;
+      return x;
+    } catch (error) {
+      this.logger.error('Failed to fetch roles', error);
+      throw error;
+    }
+  }
+  async assignRole(userId: string, assignRoleDto: AssignRoleDto, token: string) {
+    try {
+      const x = (
+        await this.httpService.axiosRef.post(this.getUrl.assignUserRoleUrl + `/${userId}`, assignRoleDto, {
+          headers: {
+            Authorization: token,
+          },
+        })
+      ).data;
+      return x;
+    } catch (error) {
+      this.logger.error('Failed to assign role to user', error);
+      throw error;
+    }
+  }
+  async updateUserKyc(userId: string, token: string) {
+    try {
+      const user = (
+        await this.httpService.axiosRef.post(
+          this.getUrl.updateUserKycUrl + `/${userId}`,
+          {
+            lastName: 'Doe',
+            firstName: 'John',
+            address: '123 Main St',
+            email: 'john.doe@example.com',
+            gender: 'Male',
+            provider: {
+              id: 'provider123',
+              name: 'Provider Name',
+            },
+          },
+          {
+            headers: {
+              Authorization: token,
+            },
+          },
+        )
+      ).data;
       return user;
     } catch (error) {
-      this.logger.error('Error fetching user by ID:', error);
-      throw new Error('Failed to fetch user by ID');
+      this.logger.error('Failed to update user kyc', error);
+      throw error;
     }
   }
-
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    try {
-      const updatedUser = await this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true }).exec();
-      if (!updatedUser) {
-        throw new Error('User not found');
-      }
-
-      return updatedUser;
-    } catch (error) {
-      this.logger.error('Error updating user:', error);
-      throw new Error('Failed to update user');
-    }
-  }
-
   async remove(id: string) {
     try {
       const result = await this.userModel.findByIdAndDelete(id).exec();
@@ -86,34 +141,20 @@ export class UserService {
   }
 
   async sendOtp(phoneNumber: PhoneNumberDto): Promise<string> {
-    const otp = this.globalOtp;
-    this.logger.log('phoneNumber:', phoneNumber);
-    // const result=await this.twilioClient.sendOtpMobile({
-    //   phoneNumber: phoneNumber as unknown as string,
-    //   otp: otp
-    // })
-    return otp;
+    try {
+      const otp = (await this.httpService.axiosRef.post(this.getUrl.getUserSendOtpUrl, phoneNumber)).data;
+      return otp;
+    } catch (error) {
+      this.logger.error('Failed to fetch userDetails', error);
+      throw error;
+    }
   }
-  async verifyOtp(otp: OtpDto, phoneNumber: PhoneNumberDto, persona?: Persona): Promise<User | boolean> {
-    if (otp.otp == this.globalOtp) {
-      const isUserAlreadyExist = await this.userModel.findOne({ 'userDetails.phoneNumber': phoneNumber.phoneNumber });
-
-      if (isUserAlreadyExist) {
-        const result = this.responseUtilsService.getSuccessResponse(
-          { userId: isUserAlreadyExist._id },
-          CustomMessage.LOGGED_IN,
-        );
-        return result;
-      }
-
-      const data = await this.userModel.create({
-        persona: persona,
-        userDetails: {
-          phoneNumber: phoneNumber.phoneNumber,
-        },
-      });
-      const result = this.responseUtilsService.getSuccessResponse({ userId: data._id }, CustomMessage.CREATED);
-      return result;
-    } else return false;
+  async verifyOtp(verifyOtpDto: VerifyOtpDto): Promise<User | any> {
+    try {
+      return (await this.httpService.axiosRef.post(this.getUrl.getUserVerifyOtpUrl, verifyOtpDto)).data;
+    } catch (error) {
+      this.logger.error('Failed to fetch userDetails', error);
+      throw error;
+    }
   }
 }

@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class GetAuthUrls extends ConfigService {
+export class GetUrl extends ConfigService {
   eAuthUrl = this.get('eAuthUri');
   vcUrl = this.get('vcUrl');
+  userServiceUrl = this.get('userServiceUrl');
 
   /**
    * Returns the URL for fetching providers from the eAuth service.
@@ -39,4 +40,12 @@ export class GetAuthUrls extends ConfigService {
   getVcWalletUrl = this.vcUrl + '/api/v1/wallet';
 
   getVcWalletFileUploadUrl = this.vcUrl + '/api/v1/wallet/files';
+
+  getUserSendOtpUrl = this.userServiceUrl + '/api/v1/auth/send-otp';
+  getUserVerifyOtpUrl = this.userServiceUrl + '/api/v1/auth/verify-otp';
+  getUserProfileUrl = this.userServiceUrl + '/api/v1/user';
+  getRolesUrl = this.userServiceUrl + '/api/v1/role';
+  assignUserRoleUrl = this.userServiceUrl + '/api/v1/user/role';
+  updateUserKycUrl = this.userServiceUrl + '/api/v1/user/kyc';
+  getUserJourneyUrl = this.userServiceUrl + '/api/v1/user/journey';
 }

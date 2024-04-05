@@ -3,7 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 // import { UpdateWalletDto } from './dto/update-wallet.dto';
 
 import { HttpService } from '@nestjs/axios';
-import { GetAuthUrls, ResponseUtilsService } from '../common/utils';
+import { GetUrl, ResponseUtilsService } from '../common/utils';
 import { GetUserWalletFilesQueryDto } from './dto';
 import { CustomMessage } from '../common/enums/message';
 
@@ -12,14 +12,14 @@ export class WalletService {
   private readonly logger: Logger;
   constructor(
     private readonly httpService: HttpService,
-    private readonly getAuthUrl: GetAuthUrls,
+    private readonly getUrl: GetUrl,
     private responseUtilsService: ResponseUtilsService,
   ) {
     this.logger = new Logger(WalletService.name);
   }
   async getWalletDetails(walletId: string) {
     try {
-      const walletData = (await this.httpService.axiosRef.get(this.getAuthUrl.getVcWalletUrl + '/' + walletId)).data;
+      const walletData = (await this.httpService.axiosRef.get(this.getUrl.getVcWalletUrl + '/' + walletId)).data;
 
       return this.responseUtilsService.getSuccessResponse(walletData, CustomMessage.OK);
     } catch (error) {
@@ -31,7 +31,7 @@ export class WalletService {
   async findUserWalletFiles(getUserWalletFilesQueryDto: GetUserWalletFilesQueryDto) {
     try {
       const walletFilesData = (
-        await this.httpService.axiosRef.get(this.getAuthUrl.getUserWalletFilesUrl, {
+        await this.httpService.axiosRef.get(this.getUrl.getUserWalletFilesUrl, {
           params: getUserWalletFilesQueryDto,
         })
       ).data;
@@ -60,7 +60,7 @@ export class WalletService {
 
       // Make the POST request
       const response = (
-        await this.httpService.axiosRef.post(this.getAuthUrl.getVcWalletFileUploadUrl, formData, {
+        await this.httpService.axiosRef.post(this.getUrl.getVcWalletFileUploadUrl, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
