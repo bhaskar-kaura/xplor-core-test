@@ -1,61 +1,51 @@
-import { Controller, Get, Post, Patch, Param, Delete, Query, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Delete, Body } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { OtpDto, PhoneNumberDto } from './dto/phone-number.dto';
-import { ApiTags, ApiResponse, ApiQuery, ApiBody } from '@nestjs/swagger';
-import { PersonaClass } from './interfaces/user-details.interface';
-import { PersonaDto } from './dto/user-persona.dto';
-import { SuccessResponseEntity } from './entity/success.entity';
+import { PhoneNumberDto } from './dto/phone-number.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { VerifyOtpDto } from './dto/verify-otp.dot';
+import { ExtractToken } from '../common/decorators/extract-token.decorator';
+import { AssignRoleDto } from './dto';
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
-
   @Post('/send-otp')
-  @ApiResponse({
-    status: 200,
-    description: 'Otp is send to the given phone number.',
-    // Assuming HealthCheck is the interface or model representing the health check data
-  })
-  @ApiQuery({ name: 'phoneNumber', type: String, required: true })
-  sendOtp(@Query() phoneNumber: PhoneNumberDto) {
+  sendOtp(@Body() phoneNumber: PhoneNumberDto) {
     return this.userService.sendOtp(phoneNumber);
   }
 
   @Post('/verify-otp')
-  @ApiResponse({
-    status: 200,
-    description: 'Verify the given otp',
-    type: SuccessResponseEntity,
-    // Assuming HealthCheck is the interface or model representing the health check data
-  })
-  @ApiQuery({ name: 'otp', type: String, required: true })
-  @ApiQuery({ name: 'phoneNumber', type: String, required: true })
-  @ApiBody({ type: PersonaClass })
-  verifyOtp(@Query() otp: OtpDto, @Query() phoneNumber: PhoneNumberDto, @Body() persona: PersonaDto) {
-    return this.userService.verifyOtp(otp, phoneNumber, persona);
+  verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) {
+    return this.userService.verifyOtp(verifyOtpDto);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Get('journey/:userId')
+  getUserJourney(@ExtractToken() token: string, @Param('id') id: string) {
+    return this.userService.getUserJourney(id, token);
+  }
+  @Get('roles')
+  findRoles(@ExtractToken() token: string) {
+    return this.userService.findRoles(token);
+  }
+  @Post('role/:userId')
+  assignRole(@Param('userId') userId: string, @Body() assignRoleDto: AssignRoleDto, @ExtractToken() token: string) {
+    return this.userService.assignRole(userId, assignRoleDto, token);
+  }
+  @Post('kyc/:userId')
+  updateUserKyc(@Param('userId') userId: string, @ExtractToken() token: string) {
+    return this.userService.updateUserKyc(userId, token);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+  getUser(@ExtractToken() token: string, @Param('id') id: string) {
+    return this.userService.findOne(id, token);
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
   }
 
   @Delete(':id')

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { CreateEAuthDto } from './dto/create-e-auth.dto';
-import { GetAuthUrls } from '../common/utils/get-urls-utils.service';
+import { GetUrl } from '../common/utils/get-urls-utils.service';
 import { IProvider } from './interfaces/provider.interface';
 import { ResponseUtilsService } from '../common/utils/response-utils.service';
 import { ITokenAndUserDetails } from './interfaces';
@@ -12,7 +12,7 @@ export class EAuthService {
   private readonly logger: Logger;
   constructor(
     private readonly httpService: HttpService,
-    private readonly getAuthUrl: GetAuthUrls,
+    private readonly getUrl: GetUrl,
     private responseUtilsService: ResponseUtilsService,
   ) {
     this.logger = new Logger(EAuthService.name);
@@ -20,7 +20,7 @@ export class EAuthService {
   async getUser(createEAuthDto: CreateEAuthDto) {
     try {
       const userDetails: ITokenAndUserDetails = (
-        await this.httpService.axiosRef.get(this.getAuthUrl.getUserInfoUrl(createEAuthDto.provider), {
+        await this.httpService.axiosRef.get(this.getUrl.getUserInfoUrl(createEAuthDto.provider), {
           params: { code: createEAuthDto.code },
         })
       ).data;
@@ -33,7 +33,7 @@ export class EAuthService {
 
   async getProviders() {
     try {
-      const responseData: IProvider[] = (await this.httpService.axiosRef.get(this.getAuthUrl.getProvidersUrl)).data;
+      const responseData: IProvider[] = (await this.httpService.axiosRef.get(this.getUrl.getProvidersUrl)).data;
       const providerData = this.responseUtilsService.getSuccessResponse(responseData, CustomMessage.OK);
       // console.log('providerData', providerData);
       return providerData;
@@ -45,7 +45,7 @@ export class EAuthService {
 
   async getAccessToken(provider: string) {
     try {
-      const accessToken: string = (await this.httpService.axiosRef.get(this.getAuthUrl.getUserAccessTokenUrl(provider)))
+      const accessToken: string = (await this.httpService.axiosRef.get(this.getUrl.getUserAccessTokenUrl(provider)))
         .data;
       return this.responseUtilsService.getSuccessResponse(accessToken, CustomMessage.OK);
     } catch (error) {

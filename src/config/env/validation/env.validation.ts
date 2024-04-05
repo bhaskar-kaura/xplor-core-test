@@ -5,4 +5,5 @@ export default () => ({
   DATABASE_URL: Joi.string().required().default('mongodb://localhost:27017/Xplore'),
   E_AUTH_URI: Joi.string().required().default('http://localhost:3000'),
   VC_URL: Joi.string().required().default('http://localhost:4000'),
+  USER_SERVICE_URL: Joi.string().required().default('http://localhost:6000'),
 });

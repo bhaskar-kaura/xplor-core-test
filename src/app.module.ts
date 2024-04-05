@@ -12,7 +12,7 @@ import { MongooseConfigService } from './config/database/database.config';
 import { CommonModule } from './common/common.module';
 import { WalletModule } from './wallet/wallet.module';
 import { HttpModule } from '@nestjs/axios';
-import { GetAuthUrls } from './common/utils/get-urls-utils.service';
+import { GetUrl } from './common/utils/get-urls-utils.service';
 import { TwilioModule } from './twilio/twilio.module';
 @Module({
   imports: [
@@ -37,6 +37,6 @@ import { TwilioModule } from './twilio/twilio.module';
     TwilioModule,
   ],
   controllers: [AppController],
-  providers: [AppService, GetAuthUrls],
+  providers: [AppService, GetUrl],
 })
 export class AppModule {}
