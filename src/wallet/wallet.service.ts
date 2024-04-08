@@ -4,7 +4,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { HttpService } from '@nestjs/axios';
 import { GetUrl, ResponseUtilsService } from '../common/utils';
-import { GetUserWalletFilesQueryDto } from './dto';
+import { CreateWalletDto, GetUserWalletFilesQueryDto } from './dto';
 import { CustomMessage } from '../common/enums/message';
 
 @Injectable()
@@ -17,9 +17,18 @@ export class WalletService {
   ) {
     this.logger = new Logger(WalletService.name);
   }
+  async createWallet(createWalletDto: CreateWalletDto) {
+    try {
+      const walletData = (await this.httpService.axiosRef.post(this.getUrl.getWalletUrl, createWalletDto)).data;
+      return this.responseUtilsService.getSuccessResponse(walletData, CustomMessage.OK);
+    } catch (error) {
+      this.logger.error('Error creating wallet', error);
+      throw error;
+    }
+  }
   async getWalletDetails(walletId: string) {
     try {
-      const walletData = (await this.httpService.axiosRef.get(this.getUrl.getVcWalletUrl + '/' + walletId)).data;
+      const walletData = (await this.httpService.axiosRef.get(this.getUrl.getWalletUrl + '/' + walletId)).data;
 
       return this.responseUtilsService.getSuccessResponse(walletData, CustomMessage.OK);
     } catch (error) {
@@ -66,7 +75,6 @@ export class WalletService {
           },
         })
       ).data;
-      // console.log('response', response);
 
       return this.responseUtilsService.getSuccessResponse(response.data, CustomMessage.OK);
     } catch (error) {

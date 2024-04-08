@@ -13,7 +13,6 @@ import { CommonModule } from './common/common.module';
 import { WalletModule } from './wallet/wallet.module';
 import { HttpModule } from '@nestjs/axios';
 import { GetUrl } from './common/utils/get-urls-utils.service';
-import { TwilioModule } from './twilio/twilio.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -32,9 +31,7 @@ import { TwilioModule } from './twilio/twilio.module';
     UserModule,
     CommonModule,
     WalletModule,
-    TwilioModule,
     { module: HttpModule, global: true },
-    TwilioModule,
   ],
   controllers: [AppController],
   providers: [AppService, GetUrl],

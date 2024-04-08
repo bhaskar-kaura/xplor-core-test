@@ -35,7 +35,7 @@ export class EAuthService {
     try {
       const responseData: IProvider[] = (await this.httpService.axiosRef.get(this.getUrl.getProvidersUrl)).data;
       const providerData = this.responseUtilsService.getSuccessResponse(responseData, CustomMessage.OK);
-      // console.log('providerData', providerData);
+
       return providerData;
     } catch (error) {
       this.logger.error('Failed to fetch providers', error);
