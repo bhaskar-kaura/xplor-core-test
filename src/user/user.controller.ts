@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Param, Delete, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Delete, Body, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PhoneNumberDto } from './dto/phone-number.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { VerifyOtpDto } from './dto/verify-otp.dot';
 import { ExtractToken } from '../common/decorators/extract-token.decorator';
-import { AssignRoleDto } from './dto';
+import { AssignRoleDto, ResendOtpDto } from './dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -21,27 +21,31 @@ export class UserController {
   verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) {
     return this.userService.verifyOtp(verifyOtpDto);
   }
+  @Post('resend-otp')
+  resendOtp(@Body() resendOtp: ResendOtpDto) {
+    return this.userService.resendOtp(resendOtp);
+  }
 
-  @Get('journey/:userId')
-  getUserJourney(@ExtractToken() token: string, @Param('id') id: string) {
-    return this.userService.getUserJourney(id, token);
+  @Get('journey')
+  getUserJourney(@ExtractToken() token: string) {
+    return this.userService.getUserJourney(token);
   }
   @Get('roles')
   findRoles(@ExtractToken() token: string) {
     return this.userService.findRoles(token);
   }
-  @Post('role/:userId')
-  assignRole(@Param('userId') userId: string, @Body() assignRoleDto: AssignRoleDto, @ExtractToken() token: string) {
-    return this.userService.assignRole(userId, assignRoleDto, token);
+  @Patch('role')
+  assignRole(@Body() assignRoleDto: AssignRoleDto, @ExtractToken() token: string) {
+    return this.userService.assignRole(assignRoleDto, token);
   }
-  @Post('kyc/:userId')
-  updateUserKyc(@Param('userId') userId: string, @ExtractToken() token: string) {
-    return this.userService.updateUserKyc(userId, token);
+  @Patch('kyc')
+  updateUserKyc(@ExtractToken() token: string) {
+    return this.userService.updateUserKyc(token);
   }
 
-  @Get(':id')
-  getUser(@ExtractToken() token: string, @Param('id') id: string) {
-    return this.userService.findOne(id, token);
+  @Get()
+  getUser(@ExtractToken() token: string) {
+    return this.userService.findOne(token);
   }
   @Post()
   create(@Body() createUserDto: CreateUserDto) {

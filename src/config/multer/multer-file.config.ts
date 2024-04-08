@@ -10,7 +10,7 @@ export const multerFileUploadConfig: MulterModuleOptions = {
   fileFilter: (req: any, file: any, cb: any) => {
     try {
       // Synchronous validation logic
-      // console.log(file.mimetype);
+
       if (file.mimetype.match(/\/(jpg|jpeg|png|pdf|doc|json|xml|)$/) || file.mimetype == 'application/octet-stream') {
         // Allow storage of file
         cb(null, true);

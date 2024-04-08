@@ -1,5 +1,6 @@
 import { IsString } from 'class-validator';
-export class AssignRoleDto {
+
+export class ResendOtpDto {
   @IsString()
-  readonly roleId: string;
+  key: string;
 }

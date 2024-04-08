@@ -9,7 +9,7 @@ services:
       - NODE_ENV=${NODE_ENV}
       - DATABASE_URL=${DATABASE_URL}
       - E_AUTH_URI=${E_AUTH_URI}
-      - VC_URL=${VC_URL}
+      - WALLET_URL=${WALLET_URL}
     ports:
       - 1067:${PORT}
     networks:

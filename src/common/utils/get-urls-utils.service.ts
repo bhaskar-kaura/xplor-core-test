@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class GetUrl extends ConfigService {
   eAuthUrl = this.get('eAuthUri');
-  vcUrl = this.get('vcUrl');
+  walletUrl = this.get('walletUrl');
   userServiceUrl = this.get('userServiceUrl');
 
   /**
@@ -31,18 +31,19 @@ export class GetUrl extends ConfigService {
    * Returns the URL for fetching user wallet files from the verification service.
    * @returns The constructed URL for fetching user wallet files.
    */
-  getUserWalletFilesUrl = this.vcUrl + '/api/v1/wallet/files';
+  getUserWalletFilesUrl = this.walletUrl + '/api/v1/wallet/files';
 
   /**
    * Returns the URL for accessing the user's wallet in the verification service.
    * @returns The constructed URL for accessing the user's wallet.
    */
-  getVcWalletUrl = this.vcUrl + '/api/v1/wallet';
+  getWalletUrl = this.walletUrl + '/api/v1/wallet';
 
-  getVcWalletFileUploadUrl = this.vcUrl + '/api/v1/wallet/files';
+  getVcWalletFileUploadUrl = this.walletUrl + '/api/v1/wallet/files';
 
   getUserSendOtpUrl = this.userServiceUrl + '/api/v1/auth/send-otp';
   getUserVerifyOtpUrl = this.userServiceUrl + '/api/v1/auth/verify-otp';
+  getUserResendOtpUrl = this.userServiceUrl + '/api/v1/auth/resend-otp';
   getUserProfileUrl = this.userServiceUrl + '/api/v1/user';
   getRolesUrl = this.userServiceUrl + '/api/v1/role';
   assignUserRoleUrl = this.userServiceUrl + '/api/v1/user/role';

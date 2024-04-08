@@ -8,7 +8,7 @@ import { PhoneNumberDto } from './dto/phone-number.dto';
 import { ResponseUtilsService } from '../common/utils/response-utils.service';
 import { GetUrl } from '../common/utils';
 import { HttpService } from '@nestjs/axios';
-import { AssignRoleDto, VerifyOtpDto } from './dto';
+import { AssignRoleDto, ResendOtpDto, VerifyOtpDto } from './dto';
 
 @Injectable()
 export class UserService {
@@ -44,10 +44,10 @@ export class UserService {
     }
   }
 
-  async findOne(id: string, token: string) {
+  async findOne(token: string) {
     try {
       return (
-        await this.httpService.axiosRef.get(this.getUrl.getUserProfileUrl + `/${id}`, {
+        await this.httpService.axiosRef.get(this.getUrl.getUserProfileUrl, {
           headers: {
             Authorization: token,
           },
@@ -55,13 +55,13 @@ export class UserService {
       ).data;
     } catch (error) {
       this.logger.error('Failed to fetch userDetails', error);
-      throw error;
+      return error?.response?.data;
     }
   }
-  async getUserJourney(id: string, token: string) {
+  async getUserJourney(token: string) {
     try {
       return (
-        await this.httpService.axiosRef.get(this.getUrl.getUserJourneyUrl + `/${id}`, {
+        await this.httpService.axiosRef.get(this.getUrl.getUserJourneyUrl, {
           headers: {
             Authorization: token,
           },
@@ -69,39 +69,36 @@ export class UserService {
       ).data;
     } catch (error) {
       this.logger.error('Failed to fetch userDetails', error);
-      throw error;
+      throw error?.response?.data;
     }
   }
   async findRoles(token: string) {
     try {
-      const x = (await this.httpService.axiosRef.get(this.getUrl.getRolesUrl, { headers: { Authorization: token } }))
-        .data;
-      return x;
+      return (await this.httpService.axiosRef.get(this.getUrl.getRolesUrl, { headers: { Authorization: token } })).data;
     } catch (error) {
       this.logger.error('Failed to fetch roles', error);
-      throw error;
+      throw error?.response?.data;
     }
   }
-  async assignRole(userId: string, assignRoleDto: AssignRoleDto, token: string) {
+  async assignRole(assignRoleDto: AssignRoleDto, token: string) {
     try {
-      const x = (
-        await this.httpService.axiosRef.post(this.getUrl.assignUserRoleUrl + `/${userId}`, assignRoleDto, {
+      return (
+        await this.httpService.axiosRef.patch(this.getUrl.assignUserRoleUrl, assignRoleDto, {
           headers: {
             Authorization: token,
           },
         })
       ).data;
-      return x;
     } catch (error) {
       this.logger.error('Failed to assign role to user', error);
-      throw error;
+      throw error?.response?.data;
     }
   }
-  async updateUserKyc(userId: string, token: string) {
+  async updateUserKyc(token: string) {
     try {
       const user = (
-        await this.httpService.axiosRef.post(
-          this.getUrl.updateUserKycUrl + `/${userId}`,
+        await this.httpService.axiosRef.patch(
+          this.getUrl.updateUserKycUrl,
           {
             lastName: 'Doe',
             firstName: 'John',
@@ -123,7 +120,7 @@ export class UserService {
       return user;
     } catch (error) {
       this.logger.error('Failed to update user kyc', error);
-      throw error;
+      throw error?.response?.data;
     }
   }
   async remove(id: string) {
@@ -145,16 +142,26 @@ export class UserService {
       const otp = (await this.httpService.axiosRef.post(this.getUrl.getUserSendOtpUrl, phoneNumber)).data;
       return otp;
     } catch (error) {
-      this.logger.error('Failed to fetch userDetails', error);
-      throw error;
+      this.logger.error('Failed to sendOtp', error);
+      throw error.response.data;
     }
   }
   async verifyOtp(verifyOtpDto: VerifyOtpDto): Promise<User | any> {
     try {
       return (await this.httpService.axiosRef.post(this.getUrl.getUserVerifyOtpUrl, verifyOtpDto)).data;
     } catch (error) {
-      this.logger.error('Failed to fetch userDetails', error);
-      throw error;
+      this.logger.error('Failed to verifyOtp', error);
+      throw error.response.data;
+    }
+  }
+
+  async resendOtp(resendOtp: ResendOtpDto) {
+    try {
+      const otp = (await this.httpService.axiosRef.post(this.getUrl.getUserResendOtpUrl, resendOtp)).data;
+      return otp;
+    } catch (error) {
+      this.logger.error('Failed to resendOtp', error);
+      throw error.response.data;
     }
   }
 }
