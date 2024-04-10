@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsOptional } from 'class-validator';
 
 export class PhoneNumberDto {
-  @IsNotEmpty()
+  @IsOptional()
   phoneNumber: string;
 }
 
 export class OtpDto {
-  @IsString({ message: 'Otp must be a string' })
+  @IsOptional()
   otp: string;
 }
