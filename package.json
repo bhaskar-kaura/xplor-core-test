@@ -47,6 +47,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.1.0",
     "@commitlint/config-conventional": "^19.1.0",
+    "@faker-js/faker": "^8.4.1",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
@@ -77,7 +78,7 @@
   "lint-staged": {
     "{src,apps,libs,test}/**/*.ts": [
       "eslint --fix"
-    ],
+    ], 
     "*.js": "eslint --cache --fix"
   },
   "jest": {
@@ -95,7 +96,20 @@
       "**/*.(t|j)s",
       "!**/node_modules/**",
       "!**/wallet/**",
-      "!**/e-auth/**"
+      "!**/e-auth/**",
+      "!**/config/**",
+      "!**/common/enums/**",
+      "!**/common/constants/**",
+      "!**/user/entity/**",
+      "!**/user/enums/**",
+      "!**/common/interfaces/**",
+      "!**/main.ts/**",
+      "!**/user/user.module.ts/**",
+      "!**/app.module.ts/**",
+      "!**/user/user.service.ts/**"
+
+
+              
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"

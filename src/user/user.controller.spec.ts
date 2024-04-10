@@ -6,9 +6,101 @@ import { PhoneNumberDto } from './dto/phone-number.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
 import { AssignRoleDto } from './dto/assign-role.dto';
 import { VerifyOtpDto } from './dto';
+import { faker } from '@faker-js/faker';
 
 describe('UserController', () => {
   let controller: UserController;
+
+  const findRoles = {
+    success: true,
+    message: 'OK',
+    data: [
+      {
+        _id: `role_${faker.string.uuid()}`,
+        type: faker.person.jobTitle(),
+        updated_at: new Date(),
+        created_at: new Date(),
+        __v: 0,
+      },
+      {
+        _id: `role_${faker.string.uuid()}`,
+        type: faker.person.jobTitle(),
+        updated_at: new Date(),
+        created_at: new Date(),
+        __v: 0,
+      },
+    ],
+  };
+  const sendOtp = {
+    success: true,
+    data: {
+      key: faker.string.uuid(),
+      otp: '191067',
+    },
+    message: 'OK',
+  };
+
+  const verifyOtp = {
+    success: true,
+    message: 'OK',
+    data: {
+      token: `Bearer jwt_token_${faker.string.uuid()}`,
+      userId: `user_${faker.string.uuid()}`,
+    },
+  };
+  const resendOtp = {
+    success: true,
+    message: 'OK',
+    data: {
+      token: `Bearer jwt_token_${faker.string.uuid()}`,
+      userId: `user_${faker.string.uuid()}`,
+    },
+  };
+  const assignRole = {
+    _id: `user_${faker.string.uuid()}`,
+    phoneNumber: faker.phone.number(),
+    verified: true,
+    kycStatus: false,
+    wallet: null,
+    updated_at: new Date(),
+    created_at: new Date(),
+    __v: 0,
+    role: {
+      _id: `role_${faker.string.uuid()}`,
+      type: faker.person.jobTitle(),
+      updated_at: new Date(),
+      created_at: new Date(),
+      __v: 0,
+    },
+  };
+  const updateRole = {
+    success: true,
+    message: 'OK',
+    data: {
+      _id: `user_${faker.string.uuid()}`,
+      phoneNumber: faker.phone.number(),
+      verified: true,
+      kycStatus: true,
+      wallet: null,
+      updated_at: new Date(),
+      created_at: new Date(),
+      __v: 0,
+      role: `role_${faker.string.uuid()}`,
+      kyc: {
+        firstName: faker.person.firstName(),
+        address: faker.location.streetAddress(),
+        email: faker.internet.email(),
+        gender: faker.person.gender(), // Randomly select 'Male' or 'Female' gender
+        provider: {
+          id: faker.string.uuid(),
+          name: faker.person.fullName(),
+        },
+        _id: `kyc_${faker.string.uuid()}`,
+        updated_at: new Date(),
+        created_at: new Date(),
+      },
+    },
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -17,97 +109,12 @@ describe('UserController', () => {
         {
           provide: UserService,
           useValue: {
-            sendOtp: jest.fn().mockResolvedValue({
-              success: true,
-              data: {
-                key: 'b9f9602fdd7cc6b36efc5f855ab970df',
-                otp: '191067',
-              },
-              message: 'OK',
-            }),
-            verifyOtp: jest.fn().mockResolvedValue({
-              success: true,
-              message: 'OK',
-              data: {
-                token:
-                  'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzE0NmMzNTJjLTNiMzEtNGNjYS04OWYwLTJlYjM4YWU4NGRiMCIsImlhdCI6MTcxMjU3OTM4OSwiZXhwIjoxNzE2MTc5Mzg5fQ.tT_Rx8f1eUiFSrXX6DNsUH9FiGrhGzl8m5Z7YD3i6ug',
-                userId: 'user_146c352c-3b31-4cca-89f0-2eb38ae84db0',
-              },
-            }),
-            resendOtp: jest.fn().mockResolvedValue({
-              success: true,
-              message: 'OK',
-              data: {
-                key: '8e7aec3366f6ce6fa4afa9cdde7857ea',
-                otp: '123456',
-              },
-            }),
-            findRoles: jest.fn().mockResolvedValue({
-              success: true,
-              message: 'OK',
-              data: [
-                {
-                  _id: 'role_61b32a02-d422-4b10-b060-945e0e2e6418',
-                  type: 'AGENT',
-                  updated_at: '2024-04-05T13:16:27.007Z',
-                  created_at: '2024-04-05T13:16:27.007Z',
-                  __v: 0,
-                },
-                {
-                  _id: 'role_8c47eb6a-840c-47bc-91a0-cfb9aee03cac',
-                  type: 'SEEKER',
-                  updated_at: '2024-04-05T13:16:27.009Z',
-                  created_at: '2024-04-05T13:16:27.009Z',
-                  __v: 0,
-                },
-              ],
-            }),
-            assignRole: jest.fn().mockResolvedValue({
-              _id: 'user_146c352c-3b31-4cca-89f0-2eb38ae84db0',
-              phoneNumber: '+919876546788',
-              verified: true,
-              kycStatus: false,
-              wallet: null,
-              updated_at: '2024-04-08T12:21:19.308Z',
-              created_at: '2024-04-08T12:21:19.308Z',
-              __v: 0,
-              role: {
-                _id: 'role_61b32a02-d422-4b10-b060-945e0e2e6418',
-                type: 'AGENT',
-                updated_at: '2024-04-05T13:16:27.007Z',
-                created_at: '2024-04-05T13:16:27.007Z',
-                __v: 0,
-              },
-            }),
-            updateUserKyc: jest.fn().mockResolvedValue({
-              success: true,
-              message: 'OK',
-              data: {
-                _id: 'user_146c352c-3b31-4cca-89f0-2eb38ae84db0',
-                phoneNumber: '+919876546788',
-                verified: true,
-                kycStatus: true,
-                wallet: null,
-                updated_at: '2024-04-08T12:21:19.308Z',
-                created_at: '2024-04-08T12:21:19.308Z',
-                __v: 0,
-                role: 'role_61b32a02-d422-4b10-b060-945e0e2e6418',
-                kyc: {
-                  lastName: 'Doe',
-                  firstName: 'John',
-                  address: '123 Main St',
-                  email: 'john.doe@example.com',
-                  gender: 'Male',
-                  provider: {
-                    id: 'provider123',
-                    name: 'Provider Name',
-                  },
-                  _id: 'kyc_ee7815ac-4c9c-4a8a-97df-5305a979d346',
-                  updated_at: '2024-04-08T12:40:23.490Z',
-                  created_at: '2024-04-08T12:40:23.490Z',
-                },
-              },
-            }),
+            sendOtp: jest.fn().mockResolvedValue(sendOtp),
+            verifyOtp: jest.fn().mockResolvedValue(verifyOtp),
+            resendOtp: jest.fn().mockResolvedValue(resendOtp),
+            findRoles: jest.fn().mockResolvedValue(findRoles),
+            assignRole: jest.fn().mockResolvedValue(assignRole),
+            updateUserKyc: jest.fn().mockResolvedValue(updateRole),
           },
         },
       ],
@@ -124,134 +131,49 @@ describe('UserController', () => {
   describe('sendOtp', () => {
     it('should send OTP', async () => {
       const phoneNumberDto: PhoneNumberDto = {
-        phoneNumber: '+919098987890',
+        phoneNumber: faker.phone.number(),
       };
-      expect(await controller.sendOtp(phoneNumberDto)).toEqual({
-        success: true,
-        data: {
-          key: 'b9f9602fdd7cc6b36efc5f855ab970df',
-          otp: '191067',
-        },
-        message: 'OK',
-      });
+      expect(await controller.sendOtp(phoneNumberDto)).toEqual(sendOtp);
     });
   });
 
   describe('verifyOtp', () => {
     it('should verify OTP', async () => {
       const verifyOtpDto: VerifyOtpDto = {
-        key: 'b9f9602fdd7cc6b36efc5f855ab970df',
-        otp: '191067',
+        key: faker.string.uuid(),
+        otp: faker.number.int({ min: 100000, max: 999999 }).toString(),
       };
-      expect(await controller.verifyOtp(verifyOtpDto)).toEqual({
-        success: true,
-        message: 'OK',
-        data: {
-          token:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzE0NmMzNTJjLTNiMzEtNGNjYS04OWYwLTJlYjM4YWU4NGRiMCIsImlhdCI6MTcxMjU3OTM4OSwiZXhwIjoxNzE2MTc5Mzg5fQ.tT_Rx8f1eUiFSrXX6DNsUH9FiGrhGzl8m5Z7YD3i6ug',
-          userId: 'user_146c352c-3b31-4cca-89f0-2eb38ae84db0',
-        },
-      });
+      expect(await controller.verifyOtp(verifyOtpDto)).toEqual(verifyOtp);
     });
   });
 
   describe('resendOtp', () => {
     it('should resend OTP', async () => {
       const resendOtpDto: ResendOtpDto = {
-        key: 'b9f9602fdd7cc6b36efc5f855ab970df',
+        key: faker.string.uuid(),
       };
-      expect(await controller.resendOtp(resendOtpDto)).toEqual({
-        success: true,
-        message: 'OK',
-        data: {
-          key: '8e7aec3366f6ce6fa4afa9cdde7857ea',
-          otp: '123456',
-        },
-      });
+      expect(await controller.resendOtp(resendOtpDto)).toEqual(resendOtp);
     });
   });
   describe('findRoles', () => {
     it('should find roles', async () => {
-      expect(await controller.findRoles('token')).toEqual({
-        success: true,
-        message: 'OK',
-        data: [
-          {
-            _id: 'role_61b32a02-d422-4b10-b060-945e0e2e6418',
-            type: 'AGENT',
-            updated_at: '2024-04-05T13:16:27.007Z',
-            created_at: '2024-04-05T13:16:27.007Z',
-            __v: 0,
-          },
-          {
-            _id: 'role_8c47eb6a-840c-47bc-91a0-cfb9aee03cac',
-            type: 'SEEKER',
-            updated_at: '2024-04-05T13:16:27.009Z',
-            created_at: '2024-04-05T13:16:27.009Z',
-            __v: 0,
-          },
-        ],
-      });
+      expect(await controller.findRoles('token')).toEqual(findRoles);
     });
   });
   describe('assignRole', () => {
     it('should assign role to user', async () => {
       const assignRoleDto: AssignRoleDto = {
-        roleId: 'role_61b32a02-d422-4b10-b060-945e0e2e6418',
+        roleId: `role_${faker.string.uuid()}`,
       };
       const token = 'mockToken';
-      expect(await controller.assignRole(assignRoleDto, token)).toEqual({
-        _id: 'user_146c352c-3b31-4cca-89f0-2eb38ae84db0',
-        phoneNumber: '+919876546788',
-        verified: true,
-        kycStatus: false,
-        wallet: null,
-        updated_at: '2024-04-08T12:21:19.308Z',
-        created_at: '2024-04-08T12:21:19.308Z',
-        __v: 0,
-        role: {
-          _id: 'role_61b32a02-d422-4b10-b060-945e0e2e6418',
-          type: 'AGENT',
-          updated_at: '2024-04-05T13:16:27.007Z',
-          created_at: '2024-04-05T13:16:27.007Z',
-          __v: 0,
-        },
-      });
+      expect(await controller.assignRole(assignRoleDto, token)).toEqual(assignRole);
     });
   });
 
   describe('updateUserKyc', () => {
     it('should update user KYC', async () => {
       const token = 'mockToken';
-      expect(await controller.updateUserKyc(token)).toEqual({
-        success: true,
-        message: 'OK',
-        data: {
-          _id: 'user_146c352c-3b31-4cca-89f0-2eb38ae84db0',
-          phoneNumber: '+919876546788',
-          verified: true,
-          kycStatus: true,
-          wallet: null,
-          updated_at: '2024-04-08T12:21:19.308Z',
-          created_at: '2024-04-08T12:21:19.308Z',
-          __v: 0,
-          role: 'role_61b32a02-d422-4b10-b060-945e0e2e6418',
-          kyc: {
-            lastName: 'Doe',
-            firstName: 'John',
-            address: '123 Main St',
-            email: 'john.doe@example.com',
-            gender: 'Male',
-            provider: {
-              id: 'provider123',
-              name: 'Provider Name',
-            },
-            _id: 'kyc_ee7815ac-4c9c-4a8a-97df-5305a979d346',
-            updated_at: '2024-04-08T12:40:23.490Z',
-            created_at: '2024-04-08T12:40:23.490Z',
-          },
-        },
-      });
+      expect(await controller.updateUserKyc(token)).toEqual(updateRole);
     });
   });
 
