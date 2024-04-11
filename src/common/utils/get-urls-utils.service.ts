@@ -40,6 +40,7 @@ export class GetUrl extends ConfigService {
   getWalletUrl = this.walletUrl + '/api/v1/wallet';
 
   getVcWalletFileUploadUrl = this.walletUrl + '/api/v1/wallet/files';
+  getWalletVcUrl = this.walletUrl + '/api/v1/wallet/vc';
 
   getUserSendOtpUrl = this.userServiceUrl + '/api/v1/auth/send-otp';
   getUserVerifyOtpUrl = this.userServiceUrl + '/api/v1/auth/verify-otp';

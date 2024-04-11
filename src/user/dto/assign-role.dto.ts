@@ -1,5 +1,5 @@
-import { IsString } from 'class-validator';
+import { IsOptional } from 'class-validator';
 export class AssignRoleDto {
-  @IsString()
+  @IsOptional()
   readonly roleId: string;
 }

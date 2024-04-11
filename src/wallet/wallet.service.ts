@@ -4,7 +4,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { HttpService } from '@nestjs/axios';
 import { GetUrl, ResponseUtilsService } from '../common/utils';
-import { CreateWalletDto, GetUserWalletFilesQueryDto } from './dto';
+import { CreateWalletDto, GetUserWalletFilesQueryDto, WalletQueryDto, WalletVcQueryDto } from './dto';
 import { CustomMessage } from '../common/enums/message';
 
 @Injectable()
@@ -20,34 +20,41 @@ export class WalletService {
   async createWallet(createWalletDto: CreateWalletDto) {
     try {
       const walletData = (await this.httpService.axiosRef.post(this.getUrl.getWalletUrl, createWalletDto)).data;
-      return this.responseUtilsService.getSuccessResponse(walletData, CustomMessage.OK);
+      return walletData;
     } catch (error) {
       this.logger.error('Error creating wallet', error);
-      throw error;
+      return error?.response?.data;
     }
   }
-  async getWalletDetails(walletId: string) {
+  async deleteWallet(walletId: string) {
     try {
-      const walletData = (await this.httpService.axiosRef.get(this.getUrl.getWalletUrl + '/' + walletId)).data;
-
-      return this.responseUtilsService.getSuccessResponse(walletData, CustomMessage.OK);
+      const walletData = (await this.httpService.axiosRef.delete(this.getUrl.getWalletUrl + '/' + walletId)).data;
+      return walletData;
     } catch (error) {
-      this.logger.error(`Error fetching wallet details for walletId: ${walletId}`, error);
-      throw error;
+      this.logger.error('Error deleting wallet', error);
+      return error?.response?.data;
+    }
+  }
+  async getWalletDetails(walletQueryDto: WalletQueryDto) {
+    try {
+      const walletData = (await this.httpService.axiosRef.get(this.getUrl.getWalletUrl, { params: walletQueryDto }))
+        .data;
+
+      return walletData;
+    } catch (error) {
+      this.logger.error(`Error fetching wallet details `, error);
+      return error?.response?.data;
     }
   }
 
-  async findUserWalletFiles(getUserWalletFilesQueryDto: GetUserWalletFilesQueryDto) {
+  async getWalletVcs(walletVcQueryDto: WalletVcQueryDto) {
     try {
-      const walletFilesData = (
-        await this.httpService.axiosRef.get(this.getUrl.getUserWalletFilesUrl, {
-          params: getUserWalletFilesQueryDto,
-        })
-      ).data;
-      return this.responseUtilsService.getSuccessResponse(walletFilesData, CustomMessage.OK);
+      const walletData = (await this.httpService.axiosRef.get(this.getUrl.getWalletVcUrl, { params: walletVcQueryDto }))
+        .data;
+      return walletData;
     } catch (error) {
-      this.logger.error('Error fetching user wallet files', error);
-      throw error;
+      this.logger.error(`Error fetching wallet vcs `, error);
+      return error?.response?.data;
     }
   }
   async uploadFile(file: Express.Multer.File, body: any) {
@@ -79,6 +86,19 @@ export class WalletService {
       return this.responseUtilsService.getSuccessResponse(response.data, CustomMessage.OK);
     } catch (error) {
       this.logger.error('Error uploading file', error);
+      throw error;
+    }
+  }
+  async findUserWalletFiles(getUserWalletFilesQueryDto: GetUserWalletFilesQueryDto) {
+    try {
+      const walletFilesData = (
+        await this.httpService.axiosRef.get(this.getUrl.getUserWalletFilesUrl, {
+          params: getUserWalletFilesQueryDto,
+        })
+      ).data;
+      return this.responseUtilsService.getSuccessResponse(walletFilesData, CustomMessage.OK);
+    } catch (error) {
+      this.logger.error('Error fetching user wallet files', error);
       throw error;
     }
   }
