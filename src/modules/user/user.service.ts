@@ -44,7 +44,7 @@ export class UserService {
       ).data;
     } catch (error) {
       this.logger.error('Failed to fetch userDetails', error);
-      throw error?.response?.data;
+      return error?.response?.data;
     }
   }
   // Method to find roles
@@ -53,7 +53,7 @@ export class UserService {
       return (await this.httpService.axiosRef.get(this.getUrl.getRolesUrl, { headers: { Authorization: token } })).data;
     } catch (error) {
       this.logger.error('Failed to fetch roles', error);
-      throw error?.response?.data;
+      return error?.response?.data;
     }
   }
   // Method to assign role to a user
@@ -68,7 +68,7 @@ export class UserService {
       ).data;
     } catch (error) {
       this.logger.error('Failed to assign role to user', error);
-      throw error?.response?.data;
+      return error?.response?.data;
     }
   }
   // Method to update user KYC
@@ -98,7 +98,7 @@ export class UserService {
       return user;
     } catch (error) {
       this.logger.error('Failed to update user kyc', error);
-      throw error?.response?.data;
+      return error?.response?.data;
     }
   }
 
@@ -109,7 +109,7 @@ export class UserService {
       return otp;
     } catch (error) {
       this.logger.error('Failed to sendOtp', error);
-      throw error.response.data;
+      return error.response.data;
     }
   }
   // Method to verify OTP
@@ -118,7 +118,7 @@ export class UserService {
       return (await this.httpService.axiosRef.post(this.getUrl.getUserVerifyOtpUrl, verifyOtpDto)).data;
     } catch (error) {
       this.logger.error('Failed to verifyOtp', error);
-      throw error.response.data;
+      return error.response.data;
     }
   }
 
@@ -129,7 +129,7 @@ export class UserService {
       return otp;
     } catch (error) {
       this.logger.error('Failed to resendOtp', error);
-      throw error.response.data;
+      return error.response.data;
     }
   }
 }
