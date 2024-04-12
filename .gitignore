@@ -4,3 +4,4 @@
 /file-uploads
 *.env
 /coverage
+/documentation
