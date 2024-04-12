@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { CreateEAuthDto } from './dto/create-e-auth.dto';
@@ -7,7 +8,7 @@ import { ResponseUtilsService } from '../../common/utils/response-utils.service'
 import { ITokenAndUserDetails } from './interfaces';
 import { CustomMessage } from '../../common/enums/message';
 import { CallBackQueryDto } from '../app/dto/callback-query.dto';
-import { IBasicUserDetails, ICreateKycDto } from '../app/interface/userDetails';
+import { ICreateKycDto } from '../app/interface/userDetails';
 
 // Define the EAuthService with necessary methods
 @Injectable()
@@ -68,11 +69,14 @@ export class EAuthService {
   // Method to update user on callback
   async updateUserOnCallBack(callBackQueryDto: CallBackQueryDto): Promise<any> {
     try {
-      const userDetails: IBasicUserDetails = (
+      console.log('callBackQueryDto=========', callBackQueryDto);
+      const userDetails: any = (
         await this.httpService.axiosRef.get(this.getUrl.getUserInfoUrl(callBackQueryDto.provider), {
           params: callBackQueryDto,
         })
       ).data;
+
+      console.log('userDetails============', userDetails);
       const userName = userDetails.given_name.split(' ');
       const kycUserDetails: ICreateKycDto = {
         lastName: userName[userName.length - 1], // Assuming given_name is the last name
@@ -88,11 +92,13 @@ export class EAuthService {
       const updatedUserKycData = await this.httpService.axiosRef.patch(this.getUrl.updateUserKycUrl, kycUserDetails, {
         headers: { Authorization: callBackQueryDto.state },
       });
+      console.log('updatedUserKycData?.data===========', updatedUserKycData?.data);
 
-      return updatedUserKycData.data;
+      return updatedUserKycData?.data;
     } catch (error) {
+      console.log('error in updateUserOnCallBack ============', error);
       this.logger.error('Failed to fetch userDetails', error);
-      return error.response.data;
+      return error?.response?.data;
     }
   }
 }
