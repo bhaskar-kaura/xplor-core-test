@@ -1,11 +1,32 @@
-version: "3"
+version: '3'
 services:
-  backend:
-    container_name: Core-nest-backend
+  core_backend:
+    container_name: Xplor-core-backend
     build: .
-    ports:
-     - 1067:3000
     restart: always
+    environment:
+      - PORT=${PORT} # Environment variable for the application port
+      - NODE_ENV=${NODE_ENV} # Environment variable for the Node.js environment
+      - DATABASE_URL=${DATABASE_URL} # Environment variable for the database connection URL
+      - E_AUTH_URI=${E_AUTH_URI} # Environment variable for the e-auth service URI
+      - WALLET_URL=${WALLET_URL} # Environment variable for the wallet service URI
+    ports:
+      - 1067:${PORT} # Maps the container port to the host port
+    networks:
+      - xplor-network # Connects the service to the xplor-network
 
+  core_mongodb:
+    image: mongo:latest
+    container_name: Xplor-mongo-service
+    restart: always
+    volumes:
+      - mongo-data:/data/db # Persists MongoDB data
+    networks:
+      - xplor-network # Connects the service to the xplor-network
 
-    
+networks:
+  xplor-network:
+    external: true # Indicates that the network is defined outside this file
+
+volumes:
+  mongo-data: # Defines a volume for MongoDB data persistence
