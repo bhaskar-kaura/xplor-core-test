@@ -1,6 +1,9 @@
+// src/common/filters/global-exception.filter.ts
+
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AxiosError } from 'axios'; // Import AxiosError type
+import { ERROR_MESSAGES, STATUS_CODES } from '../constants/error-messge'; // Import the constants
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -9,13 +12,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    let status = 500;
-    let message: any = 'Internal server error';
+    let status = STATUS_CODES.INTERNAL_SERVER_ERROR;
+    let message: any = ERROR_MESSAGES.INTERNAL_SERVER_ERROR;
 
     // Check if the exception is an AxiosError
     if (exception instanceof AxiosError) {
-      status = exception.response?.status || 500;
-      message = exception.response?.data?.message || 'Axios request failed';
+      status = exception.response?.status || STATUS_CODES.INTERNAL_SERVER_ERROR;
+      message = exception.response?.data?.message || ERROR_MESSAGES.AXIOS_REQUEST_FAILED;
     } else if (exception instanceof HttpException) {
       status = exception.getStatus();
       message = exception.getResponse();
@@ -23,17 +26,17 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     // Custom handling based on exception type
     switch (status) {
-      case 400:
-        message = 'Bad Request';
+      case STATUS_CODES.BAD_REQUEST:
+        message = ERROR_MESSAGES.BAD_REQUEST;
         break;
-      case 401:
-        message = 'Unauthorized';
+      case STATUS_CODES.UNAUTHORIZED:
+        message = ERROR_MESSAGES.UNAUTHORIZED;
         break;
-      case 403:
-        message = 'Forbidden';
+      case STATUS_CODES.FORBIDDEN:
+        message = ERROR_MESSAGES.FORBIDDEN;
         break;
-      case 404:
-        message = 'Not Found';
+      case STATUS_CODES.NOT_FOUND:
+        message = ERROR_MESSAGES.NOT_FOUND;
         break;
       // Add more cases as needed
     }
