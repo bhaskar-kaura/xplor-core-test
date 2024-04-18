@@ -5,4 +5,5 @@ export default () => ({
   eAuthUri: process.env.E_AUTH_URI,
   walletUrl: process.env.WALLET_URL,
   userServiceUrl: process.env.USER_SERVICE_URL,
+  organization: process.env.ORGANIZATION,
 });

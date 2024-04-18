@@ -1,16 +1,17 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { IHealthCheckResponse } from '../../common/interfaces';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { HealthCheckEntity } from './app.entity';
-import { CallBackQueryDto } from './dto/callback-query.dto';
 import { EAuthService } from '../e-auth/e-auth.service';
+import { Public } from '../../common/decorators/public.decorators';
 
 /**
  * AppController is responsible for handling various API endpoints related to the application.
  * It includes endpoints for health checks and handling callbacks from external services.
  */
 @ApiTags('Health Checkup')
+@Public()
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService, private readonly eAuthService: EAuthService) {}
@@ -39,14 +40,5 @@ export class AppController {
   @Get('/health')
   getHealth(): IHealthCheckResponse {
     return this.appService.getHealth();
-  }
-
-  /**
-   * Handles callbacks from external services, specifically for Aadhaar authentication.
-   * It processes the callback query and updates the user's information accordingly.
-   */
-  @Get('/aadhaar-callback')
-  aadhaarCallback(@Query() callBackQueryDto: CallBackQueryDto) {
-    return this.eAuthService.updateUserOnCallBack(callBackQueryDto);
   }
 }
