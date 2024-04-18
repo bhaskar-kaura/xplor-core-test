@@ -7,6 +7,7 @@ export const ERROR_MESSAGES = {
   UNAUTHORIZED: 'Unauthorized',
   FORBIDDEN: 'Forbidden',
   NOT_FOUND: 'Not Found',
+  TOKEN_MISSING: 'Token Missing',
 };
 
 export const STATUS_CODES = {

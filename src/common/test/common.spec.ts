@@ -1,13 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommonModule } from '../common.module';
-import { GetUrl, ResponseUtilsService } from '../utils';
+import { GetUrl } from '../utils';
+import { UserModule } from '../../modules/user/user.module';
+import { TokenGuard } from '../guard/token.guard';
+import { HttpModule } from '@nestjs/axios';
+import { APP_GUARD } from '@nestjs/core';
 
 describe('CommonModule', () => {
   let module: TestingModule;
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
-      imports: [CommonModule], // Import the module to be tested
+      imports: [CommonModule, { module: HttpModule, global: true }, UserModule], // Import the module to be tested
+      providers: [
+        TokenGuard,
+        {
+          provide: APP_GUARD,
+          useClass: TokenGuard,
+        },
+      ],
+      // exports: [GetUrl, TokenGuard],
     }).compile();
   });
 
@@ -15,19 +27,9 @@ describe('CommonModule', () => {
     expect(module).toBeDefined();
   });
 
-  it('should provide ResponseUtilsService', () => {
-    const responseUtilsService = module.get(ResponseUtilsService);
-    expect(responseUtilsService).toBeInstanceOf(ResponseUtilsService);
-  });
-
   it('should provide GetUrl', () => {
     const getUrl = module.get(GetUrl);
     expect(getUrl).toBeInstanceOf(GetUrl);
-  });
-
-  it('should export ResponseUtilsService', () => {
-    const responseUtilsService = module.get(ResponseUtilsService);
-    expect(responseUtilsService).toBeDefined();
   });
 
   it('should export GetUrl', () => {

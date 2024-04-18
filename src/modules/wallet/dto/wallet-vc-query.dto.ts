@@ -7,6 +7,10 @@ export class WalletVcQueryDto {
   @IsOptional()
   walletId: string;
 
+  // Validate that vcId is optional and a number
+  @IsOptional()
+  vcId?: string;
+
   // Validate that category is optional and a string
   @IsOptional()
   category?: string;

@@ -1,11 +1,13 @@
 // src/common/common.module.ts
 import { Global, Module } from '@nestjs/common';
-import { ResponseUtilsService } from './utils/response-utils.service';
 import { GetUrl } from './utils/get-urls-utils.service';
+import { TokenGuard } from './guard/token.guard';
+import { UserModule } from '../modules/user/user.module';
 
 @Global()
 @Module({
-  providers: [ResponseUtilsService, GetUrl],
-  exports: [ResponseUtilsService, GetUrl], // Export the service to make it available for injection in other modules
+  imports: [UserModule],
+  providers: [GetUrl, TokenGuard],
+  exports: [GetUrl, TokenGuard], // Export the service to make it available for injection in other modules
 })
 export class CommonModule {}
