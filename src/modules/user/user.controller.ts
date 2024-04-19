@@ -1,8 +1,9 @@
 // Import necessary decorators and components from NestJS
 import { Controller, Get, Post, Body, Patch, Put } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
 import { UserService } from './user.service';
 import { PhoneNumberDto } from './dto/phone-number.dto';
-import { ApiTags } from '@nestjs/swagger';
 import { VerifyOtpDto } from './dto/verify-otp.dot';
 import { ExtractToken } from '../../common/decorators/extract-token.decorator';
 import { AssignRoleDto, ResendOtpDto } from './dto';
@@ -17,6 +18,7 @@ export class UserController {
 
   // Endpoint to send OTP
   @Public()
+  @Public()
   @Post('/send-otp')
   sendOtp(@Body() phoneNumber: PhoneNumberDto) {
     return this.userService.sendOtp(phoneNumber);
@@ -24,12 +26,14 @@ export class UserController {
 
   // Endpoint to verify OTP
   @Public()
+  @Public()
   @Post('/verify-otp')
   verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) {
     return this.userService.verifyOtp(verifyOtpDto);
   }
 
   // Endpoint to resend OTP
+  @Public()
   @Public()
   @Post('resend-otp')
   resendOtp(@Body() resendOtp: ResendOtpDto) {

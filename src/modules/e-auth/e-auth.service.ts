@@ -1,14 +1,17 @@
 /* eslint-disable no-console */
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+
 import { CreateEAuthDto } from './dto/create-e-auth.dto';
 import { GetUrl } from '../../common/utils/get-urls-utils.service';
 import { IProvider } from './interfaces/provider.interface';
 import { ITokenAndUserDetails } from './interfaces';
 import { CallBackQueryDto } from '../app/dto/callback-query.dto';
 import { ICreateKycDto } from '../app/interface/userDetails';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { EAUTH_ERROR_MESSAGES } from '../../common/constants/error-message';
+import { PROVIDERS } from '../../common/constants/providers';
 
 // Define the EAuthService with necessary methods
 @Injectable()
@@ -32,7 +35,7 @@ export class EAuthService {
       ).data;
       return userDetails;
     } catch (error) {
-      this.logger.error('Failed to fetch userDetails', error);
+      this.logger.error(EAUTH_ERROR_MESSAGES.GET_USER_DETAILS, error);
       throw error;
     }
   }
@@ -49,7 +52,7 @@ export class EAuthService {
       ).data;
       return responseData;
     } catch (error) {
-      this.logger.error('Failed to fetch providers', error);
+      this.logger.error(EAUTH_ERROR_MESSAGES.GET_PROVIDERS, error);
       throw error;
     }
   }
@@ -60,7 +63,7 @@ export class EAuthService {
         .data;
       return accessToken;
     } catch (error) {
-      this.logger.error('Failed to fetch accessToken', error);
+      this.logger.error(EAUTH_ERROR_MESSAGES.GET_ACCESS_TOKEN, error);
       throw error;
     }
   }
@@ -74,7 +77,7 @@ export class EAuthService {
       const userId = this.jwtService.decode(token)?.sub;
 
       // Log the callback query DTO for debugging purposes
-      console.log('callBackQueryDto=========', callBackQueryDto);
+      this.logger.debug('callBackQueryDto=========', callBackQueryDto);
       // Fetch user details using the provider and code from the callback query DTO
       const userDetails: any = (
         await this.httpService.axiosRef.get(this.getUrl.getUserInfoUrl(callBackQueryDto.provider), {
@@ -82,7 +85,7 @@ export class EAuthService {
         })
       ).data;
       // Log the fetched user details for debugging purposes
-      console.log('userDetails============', userDetails);
+      this.logger.debug('userDetails============', JSON.stringify(userDetails));
       // Check if there's an error in the user details and throw a BadRequestException if so
       // if (userDetails?.error) {
       //   throw new BadRequestException(userDetails?.error);
@@ -100,7 +103,7 @@ export class EAuthService {
           organization: organization,
         })
       ).data;
-      console.log('createdWalletData', createdWalletData);
+      this.logger.debug('createdWalletData', JSON.stringify(createdWalletData));
 
       // Extract the wallet ID from the created wallet data
       const walletId = createdWalletData?.data?._id;
@@ -116,11 +119,11 @@ export class EAuthService {
         gender: userDetails.gender || '', // Using gender if available, otherwise an empty string
         provider: {
           id: userDetails.user_sso_id, // Using user_sso_id as the provider id
-          name: 'digilocker', // Placeholder for provider name, as it's not present in IBasicUserDetails
+          name: PROVIDERS.DIGILOCKER, // Placeholder for provider name, as it's not present in IBasicUserDetails
         },
         walletId: walletId,
       };
-      console.log('kycUserDetails', kycUserDetails);
+      this.logger.debug('kycUserDetails', JSON.stringify(kycUserDetails));
 
       // Update the user's KYC data with the prepared details
       const updatedUserKycData: any = await this.httpService.axiosRef.patch(
@@ -136,7 +139,7 @@ export class EAuthService {
       }
 
       // Log the updated KYC data for debugging purposes
-      console.log('updatedUserKycData?.data===========', updatedUserKycData?.data);
+      this.logger.debug('updatedUserKycData?.data===========', JSON.stringify(updatedUserKycData?.data));
 
       // Return the updated KYC data
       return updatedUserKycData?.data;
@@ -147,7 +150,7 @@ export class EAuthService {
       }
 
       // Log the error for debugging purposes
-      this.logger.error('Failed to fetch userDetails', error);
+      this.logger.error(EAUTH_ERROR_MESSAGES.GET_USER_DETAILS, error);
       // Re-throw the error to be handled by the caller
       throw error;
     }

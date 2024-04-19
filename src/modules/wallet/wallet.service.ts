@@ -12,6 +12,7 @@ import {
   WalletQueryDto,
   WalletVcQueryDto,
 } from './dto';
+import { WALLET_ERROR_MESSAGES } from '../../common/constants/error-message';
 
 @Injectable()
 export class WalletService {
@@ -38,14 +39,13 @@ export class WalletService {
       return updatedUser?.data;
     } catch (error) {
       // Log the error and return the error response
-      this.logger.error('Error creating wallet', error);
+      this.logger.error(WALLET_ERROR_MESSAGES.CREATE_WALLET, error);
       throw error?.response?.data;
     }
   }
 
   // Method to delete a wallet
   async deleteWallet(userId: string, walletQueryDto: WalletQueryDto) {
-    // console.log('walletQueryDto', walletQueryDto);
     try {
       // Make a DELETE request to delete a wallet
       const walletData = (
@@ -56,7 +56,7 @@ export class WalletService {
       return walletData;
     } catch (error) {
       // Log the error and return the error response
-      this.logger.error('Error deleting wallet', error);
+      this.logger.error(WALLET_ERROR_MESSAGES.DELETE_WALLET, error);
       throw error?.response?.data;
     }
   }
@@ -71,7 +71,7 @@ export class WalletService {
       return walletData;
     } catch (error) {
       // Log the error and return the error response
-      this.logger.error(`Error fetching wallet details `, error);
+      this.logger.error(WALLET_ERROR_MESSAGES.GET_WALLET_DETAILS, error);
       throw error?.response?.data;
     }
   }
@@ -85,7 +85,7 @@ export class WalletService {
       return walletData;
     } catch (error) {
       // Log the error and return the error response
-      this.logger.error(`Error fetching wallet vcs `, error);
+      this.logger.error(WALLET_ERROR_MESSAGES.GET_WALLET_VCS, error);
       throw error?.response?.data;
     }
   }
@@ -98,7 +98,7 @@ export class WalletService {
       return walletData;
     } catch (error) {
       // Log the error and return the error response
-      this.logger.error(`Error fetching wallet vcs `, error);
+      this.logger.error(WALLET_ERROR_MESSAGES.GET_WALLET_VC, error);
       throw error?.response?.data;
     }
   }
@@ -112,7 +112,7 @@ export class WalletService {
       return walletData;
     } catch (error) {
       // Log the error and return the error response
-      this.logger.error(`Error fetching wallet vcs `, error);
+      this.logger.error(WALLET_ERROR_MESSAGES.DELETE_WALLET_VC, error);
       throw error?.response?.data;
     }
   }
@@ -148,7 +148,7 @@ export class WalletService {
       return response;
     } catch (error) {
       // Log the error and throw it
-      this.logger.error('Error uploading file', error);
+      this.logger.error(WALLET_ERROR_MESSAGES.UPLOAD_FILE, error);
       throw error?.response?.data;
     }
   }
@@ -161,7 +161,7 @@ export class WalletService {
       return vcData;
     } catch (error) {
       // Log the error and throw it
-      this.logger.error('Error sharing VC', error);
+      this.logger.error(WALLET_ERROR_MESSAGES.SHARE_VC, error);
       throw error?.response?.data;
     }
   }
@@ -174,7 +174,7 @@ export class WalletService {
       return vcData;
     } catch (error) {
       // Log the error and throw it
-      this.logger.error('Error sharing VC', error);
+      this.logger.error(WALLET_ERROR_MESSAGES.UPDATE_SHARE_VC, error);
       throw error?.response?.data;
     }
   }
@@ -188,7 +188,7 @@ export class WalletService {
       return vcData;
     } catch (error) {
       // Log the error and throw it
-      this.logger.error('Error sharing VC', error);
+      this.logger.error(WALLET_ERROR_MESSAGES.UPDATE_SHARE_VC_STATUS, error);
       throw error?.response?.data;
     }
   }
@@ -204,7 +204,7 @@ export class WalletService {
       return vcData;
     } catch (error) {
       // Log the error and throw it
-      this.logger.error('Error fetching VC shared requests', error);
+      this.logger.error(WALLET_ERROR_MESSAGES.GET_VC_SHARED_REQUESTS_LIST, error);
       throw error?.response?.data;
     }
   }

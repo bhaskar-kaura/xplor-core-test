@@ -1,4 +1,6 @@
 import { Body, Controller, Delete, Get, Patch, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+
 import { WalletService } from './wallet.service';
 import {
   CreateWalletDto,
@@ -11,7 +13,6 @@ import {
   WalletQueryDto,
   WalletVcQueryDto,
 } from './dto';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { ExtractUserId } from '../../common/decorators/extract-userId';
 import { ExtractToken } from '../../common/decorators/extract-token.decorator';
 

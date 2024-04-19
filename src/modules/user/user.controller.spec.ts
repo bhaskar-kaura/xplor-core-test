@@ -1,12 +1,13 @@
 // Import necessary modules and components for testing
 import { Test, TestingModule } from '@nestjs/testing';
+import { faker } from '@faker-js/faker';
+
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { PhoneNumberDto } from './dto/phone-number.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
 import { AssignRoleDto } from './dto/assign-role.dto';
 import { VerifyOtpDto } from './dto';
-import { faker } from '@faker-js/faker';
 
 // Define the test suite for UserController
 describe('UserController', () => {
