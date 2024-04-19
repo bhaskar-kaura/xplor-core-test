@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import { Endpoints } from '../constants/endpoint'; // Assuming 'endpoints' file path
 
 /**
@@ -38,12 +39,16 @@ export class GetUrl extends ConfigService {
   // URL for uploading wallet files to the VC wallet service.
   getVcWalletFileUploadUrl = this.walletUrl + Endpoints.walletVcWalletFileUploadUrl;
 
+  // URL to share a VC with another user.
   getShareVcUrl = this.walletUrl + Endpoints.walletVcShareUrl;
 
+  // URL to update the sharing status of a VC.
   updateSharedVcUrl = this.walletUrl + Endpoints.updateWalletVcSharedRequestUrl;
 
+  // URL to fetch a list of shared VC requests.
   getVcSharedRequestsListUrl = this.walletUrl + Endpoints.walletVcSharedRequestsListUrl;
 
+  // URL to update the status of a shared VC.
   updateSharedVcStatusUrl = this.walletUrl + Endpoints.updateSharedVcStatusUrl;
 
   // URL to fetch VC from the wallet service.

@@ -3,7 +3,8 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AxiosError } from 'axios'; // Import AxiosError type
-import { ERROR_MESSAGES, STATUS_CODES } from '../constants/error-messge'; // Import the constants
+
+import { ERROR_MESSAGES, STATUS_CODES } from '../constants/error-message'; // Import the constants
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {

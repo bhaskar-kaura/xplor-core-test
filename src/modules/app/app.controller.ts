@@ -1,7 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
+import { ApiTags, ApiResponse } from '@nestjs/swagger';
+
 import { AppService } from './app.service';
 import { IHealthCheckResponse } from '../../common/interfaces';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { HealthCheckEntity } from './app.entity';
 import { EAuthService } from '../e-auth/e-auth.service';
 import { Public } from '../../common/decorators/public.decorators';
@@ -11,6 +12,7 @@ import { Public } from '../../common/decorators/public.decorators';
  * It includes endpoints for health checks and handling callbacks from external services.
  */
 @ApiTags('Health Checkup')
+@Public()
 @Public()
 @Controller()
 export class AppController {

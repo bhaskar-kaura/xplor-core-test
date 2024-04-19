@@ -1,9 +1,12 @@
 // Import necessary decorators and components from NestJS
 import { Injectable, Logger } from '@nestjs/common';
+import { faker } from '@faker-js/faker';
+import { HttpService } from '@nestjs/axios';
+
 import { PhoneNumberDto } from './dto/phone-number.dto';
 import { GetUrl } from '../../common/utils';
-import { HttpService } from '@nestjs/axios';
 import { AssignRoleDto, CreateMPinDto, ResendOtpDto, VerifyOtpDto } from './dto';
+import { USER_ERROR_MESSAGES } from '../../common/constants/error-message';
 
 // Define the UserService with necessary methods for user operations
 @Injectable()
@@ -22,7 +25,7 @@ export class UserService {
         })
       ).data;
     } catch (error) {
-      this.logger.error('Failed to fetch userDetails', error);
+      this.logger.error(USER_ERROR_MESSAGES.GET_USER_DETAILS, error);
       throw error?.response?.data;
     }
   }
@@ -37,7 +40,7 @@ export class UserService {
         })
       ).data;
     } catch (error) {
-      this.logger.error('Failed to fetch userDetails', error);
+      this.logger.error(USER_ERROR_MESSAGES.GET_USER_JOURNEY, error);
       throw error?.response?.data;
     }
   }
@@ -46,7 +49,7 @@ export class UserService {
     try {
       return (await this.httpService.axiosRef.get(this.getUrl.getRolesUrl, { headers: { Authorization: token } })).data;
     } catch (error) {
-      this.logger.error('Failed to fetch roles', error);
+      this.logger.error(USER_ERROR_MESSAGES.GET_USER_ROLES, error);
       throw error?.response?.data;
     }
   }
@@ -61,7 +64,7 @@ export class UserService {
         })
       ).data;
     } catch (error) {
-      this.logger.error('Failed to assign role to user', error);
+      this.logger.error(USER_ERROR_MESSAGES.ASSIGN_USER_ROLE, error);
       throw error?.response?.data;
     }
   }
@@ -72,14 +75,14 @@ export class UserService {
         await this.httpService.axiosRef.patch(
           this.getUrl.updateUserKycUrl,
           {
-            lastName: 'Doe',
-            firstName: 'John',
-            address: '123 Main St',
-            email: 'john.doe@example.com',
-            gender: 'Male',
+            lastName: faker.person.lastName(),
+            firstName: faker.person.firstName(),
+            address: faker.location.streetAddress(),
+            email: faker.internet.email(),
+            gender: faker.person.gender(),
             provider: {
-              id: 'provider123',
-              name: 'Provider Name',
+              id: faker.string.uuid(),
+              name: faker.person.jobArea(),
             },
           },
           {
@@ -91,7 +94,7 @@ export class UserService {
       ).data;
       return user;
     } catch (error) {
-      this.logger.error('Failed to update user kyc', error);
+      this.logger.error(USER_ERROR_MESSAGES.UPDATE_USER_KYC, error);
       throw error?.response?.data;
     }
   }
@@ -106,7 +109,7 @@ export class UserService {
       ).data;
       return otp;
     } catch (error) {
-      this.logger.error('Failed to sendOtp', error);
+      this.logger.error(USER_ERROR_MESSAGES.SEND_OTP, error);
       throw error?.response?.data;
     }
   }
@@ -115,7 +118,7 @@ export class UserService {
     try {
       return (await this.httpService.axiosRef.post(this.getUrl.getUserVerifyOtpUrl, verifyOtpDto)).data;
     } catch (error) {
-      this.logger.error('Failed to verifyOtp', error);
+      this.logger.error(USER_ERROR_MESSAGES.VERIFY_OTP, error);
       return error.response.data;
     }
   }
@@ -126,7 +129,7 @@ export class UserService {
       const otp = (await this.httpService.axiosRef.post(this.getUrl.getUserResendOtpUrl, resendOtp)).data;
       return otp;
     } catch (error) {
-      this.logger.error('Failed to resendOtp', error);
+      this.logger.error(USER_ERROR_MESSAGES.RESEND_OTP, error);
       return error.response.data;
     }
   }
@@ -142,7 +145,7 @@ export class UserService {
         })
       ).data;
     } catch (error) {
-      this.logger.error('Failed to Validate Token', error);
+      this.logger.error(USER_ERROR_MESSAGES.VERIFY_TOKEN, error);
       throw error?.response?.data;
     }
   }
@@ -156,7 +159,7 @@ export class UserService {
         })
       ).data;
     } catch (error) {
-      this.logger.error('Failed to create mPin', error);
+      this.logger.error(USER_ERROR_MESSAGES.CREATE_USER_MPIN, error);
       throw error?.response?.data;
     }
   }
@@ -168,7 +171,7 @@ export class UserService {
         await this.httpService.axiosRef.put(this.getUrl.verifyUserMPinUrl, mPin, { headers: { Authorization: token } })
       ).data;
     } catch (error) {
-      this.logger.error('Failed to verify mPin', error);
+      this.logger.error(USER_ERROR_MESSAGES.VERIFY_USER_MPIN, error);
       throw error?.response?.data;
     }
   }

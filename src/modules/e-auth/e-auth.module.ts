@@ -1,8 +1,8 @@
 // Import necessary decorators and services
-import { Module } from '@nestjs/common';
 import { EAuthService } from './e-auth.service';
 import { EAuthController } from './e-auth.controller';
 import { JwtModule } from '@nestjs/jwt';
+import { Module } from '@nestjs/common';
 
 // Define the EAuthModule
 @Module({
