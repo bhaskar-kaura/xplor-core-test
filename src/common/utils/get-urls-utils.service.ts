@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import { Endpoints } from '../constants/endpoint'; // Assuming 'endpoints' file path
 
 /**
@@ -38,8 +39,23 @@ export class GetUrl extends ConfigService {
   // URL for uploading wallet files to the VC wallet service.
   getVcWalletFileUploadUrl = this.walletUrl + Endpoints.walletVcWalletFileUploadUrl;
 
+  // URL to share a VC with another user.
+  getShareVcUrl = this.walletUrl + Endpoints.walletVcShareUrl;
+
+  // URL to update the sharing status of a VC.
+  updateSharedVcUrl = this.walletUrl + Endpoints.updateWalletVcSharedRequestUrl;
+
+  // URL to fetch a list of shared VC requests.
+  getVcSharedRequestsListUrl = this.walletUrl + Endpoints.walletVcSharedRequestsListUrl;
+
+  // URL to update the status of a shared VC.
+  updateSharedVcStatusUrl = this.walletUrl + Endpoints.updateSharedVcStatusUrl;
+
   // URL to fetch VC from the wallet service.
-  getWalletVcUrl = this.walletUrl + Endpoints.walletWalletVcUrl;
+  getWalletVcUrl = this.walletUrl + Endpoints.getWalletVcUrl;
+
+  // URL to fetch single VC from the wallet service.
+  getWaletSingleVcUrl = this.walletUrl + Endpoints.getWalletSingleVcUrl;
 
   // URL to send OTP via user service.
   getUserSendOtpUrl = this.userServiceUrl + Endpoints.userSendOtpUrl;
@@ -52,6 +68,15 @@ export class GetUrl extends ConfigService {
 
   // URL to fetch user profile from user service.
   getUserProfileUrl = this.userServiceUrl + Endpoints.userProfileUrl;
+
+  // URL to verify token from user service.
+  verifyUserTokenUrl = this.userServiceUrl + Endpoints.verifyTokenUrl;
+
+  // URL to create user MPIN via user service.
+  createUserMPinUrl = this.userServiceUrl + Endpoints.createUserMPinUrl;
+
+  // URL to verify user MPIN via user service.
+  verifyUserMPinUrl = this.userServiceUrl + Endpoints.verifyUserMPinUrl;
 
   // URL to fetch roles from user service.
   getRolesUrl = this.userServiceUrl + Endpoints.rolesUrl;

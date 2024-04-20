@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { IHealthCheckResponse } from '../../common/interfaces';
 
 /**

@@ -56,11 +56,17 @@ export interface ICreateKycDto {
   // The first name of the user
   firstName: string;
 
+  // The email address of the user
+  email: string;
+
   // The address of the user
   address: string;
 
   // The gender of the user
   gender: string;
+
+  // The ID of the wallet
+  walletId?: string;
 
   // The provider details
   provider: IProviderDto;

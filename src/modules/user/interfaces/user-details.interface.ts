@@ -1,7 +1,7 @@
-// src/user/interfaces/user-details.interface.ts
+import { ApiProperty } from '@nestjs/swagger';
+
 // Interfaces for user details, persona, and e-authentication details
 import { AuthMethod } from '../enums/auth-method.enum';
-import { ApiProperty } from '@nestjs/swagger';
 
 // Interface for user details including personal information
 export interface UserDetails {

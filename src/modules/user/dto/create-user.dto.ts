@@ -3,6 +3,8 @@
  * Includes details about the user, such as personal information, authentication details, and associated wallet and documents.
  */
 import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
+
 import {
   EAuth,
   EAuthClass,
@@ -11,7 +13,6 @@ import {
   UserDetails,
   UserDetailsClass,
 } from '../interfaces/user-details.interface';
-import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
   // UserDetails object containing personal information
