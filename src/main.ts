@@ -1,11 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './modules/app/app.module';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 // import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // import { CustomValidationPipe } from './common/validation/custom.validation';
 import { ValidationPipe } from '@nestjs/common';
+
+import { AppModule } from './modules/app/app.module';
 
 async function bootstrap() {
   // Create a Nest application instance
@@ -27,7 +28,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   // Set a global prefix for all routes, excluding specified routes
-  app.setGlobalPrefix('api/v1', { exclude: ['/', '/health', '/aadhaar-callback'] });
+  app.setGlobalPrefix('api/v1', { exclude: ['/', '/health', '/e-auth/callback'] });
 
   // Configure Swagger/OpenAPI documentation
   const config = new DocumentBuilder()

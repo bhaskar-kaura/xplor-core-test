@@ -9,3 +9,4 @@ export * from './user-persona.dto';
 export * from './verify-otp.dot';
 export * from './assign-role.dto';
 export * from './resend-otp.dto';
+export * from './create-mpin.dto';

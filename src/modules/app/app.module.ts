@@ -13,6 +13,8 @@ import { CommonModule } from '../../common/common.module';
 import { WalletModule } from '../wallet/wallet.module';
 import { HttpModule } from '@nestjs/axios';
 import { GetUrl } from '../../common/utils/get-urls-utils.service';
+import { APP_GUARD } from '@nestjs/core';
+import { TokenGuard } from '../../common/guard/token.guard';
 
 /**
  * AppModule is the root module of the application.
@@ -38,6 +40,13 @@ import { GetUrl } from '../../common/utils/get-urls-utils.service';
     { module: HttpModule, global: true },
   ],
   controllers: [AppController],
-  providers: [AppService, GetUrl],
+  providers: [
+    AppService,
+    GetUrl,
+    {
+      provide: APP_GUARD,
+      useClass: TokenGuard,
+    },
+  ],
 })
 export class AppModule {}
