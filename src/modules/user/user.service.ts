@@ -119,7 +119,7 @@ export class UserService {
       return (await this.httpService.axiosRef.post(this.getUrl.getUserVerifyOtpUrl, verifyOtpDto)).data;
     } catch (error) {
       this.logger.error(USER_ERROR_MESSAGES.VERIFY_OTP, error);
-      return error.response.data;
+      throw error.response.data;
     }
   }
 
@@ -130,7 +130,7 @@ export class UserService {
       return otp;
     } catch (error) {
       this.logger.error(USER_ERROR_MESSAGES.RESEND_OTP, error);
-      return error.response.data;
+      throw error.response.data;
     }
   }
 
