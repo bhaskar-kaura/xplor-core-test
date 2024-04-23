@@ -7,7 +7,7 @@ import { UserService } from './user.service';
 import { PhoneNumberDto } from './dto/phone-number.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
 import { AssignRoleDto } from './dto/assign-role.dto';
-import { VerifyOtpDto } from './dto';
+import { CreateMPinDto, VerifyOtpDto } from './dto';
 
 // Define the test suite for UserController
 describe('UserController', () => {
@@ -46,7 +46,7 @@ describe('UserController', () => {
     success: true,
     message: 'OK',
     data: {
-      token: `Bearer jwt_token_${faker.string.uuid()}`,
+      accessToken: `Bearer jwt_token_${faker.string.uuid()}`,
       userId: `user_${faker.string.uuid()}`,
     },
   };
@@ -104,6 +104,48 @@ describe('UserController', () => {
     },
   };
 
+  const mockCreateMpin = {
+    success: true,
+    message: 'Created',
+    data: {
+      _id: 'user_ce6134e2-cea7-4497-8aab-352a6a2afe35',
+      phoneNumber: '+917350379500',
+      verified: true,
+      kycStatus: false,
+      wallet: 'wallet_694a2b00-c85d-4c74-9727-ffa7bfc768b3',
+      mPin: '$argon2id$v=19$m=65536,t=3,p=4$nhAJLz+/3CP6ZQS22C27gA$SydhG+iCNtVfz3e3pTXHUBh+6QD/iEajjDS1ZAIj8Bo',
+      updated_at: '2024-04-17T15:09:50.317Z',
+      created_at: '2024-04-17T15:09:50.317Z',
+      __v: 0,
+      role: 'role_d7388176-0779-45f2-b9ab-6fe40f627640',
+    },
+  };
+
+  const mockVerifiedMpin = {
+    success: true,
+    message: 'Verification Successful',
+    data: {
+      verified: true,
+    },
+  };
+
+  const mockUserLogoutResponse = {
+    success: true,
+    message: 'OK',
+    data: {
+      userId: faker.string.uuid(),
+    },
+  };
+
+  const mockGetAccessTokenResponse = {
+    success: true,
+    message: 'OK',
+    data: {
+      accessToken:
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyX2ZkZmU2MmQ4LWZjYjYtNGQyZS1iNGE4LTM4YjVmYTg2NGRkMiIsImlhdCI6MTcxMzg1NjExNSwiZXhwIjoxNzEzODU2MTc1fQ._T1syReb5y5db4P3GAJoXU64SsK8OE79gJrq4bsBg_Y',
+    },
+  };
+
   // Setup the testing module before each test
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -118,6 +160,10 @@ describe('UserController', () => {
             findRoles: jest.fn().mockResolvedValue(findRoles),
             assignRole: jest.fn().mockResolvedValue(assignRole),
             updateUserKyc: jest.fn().mockResolvedValue(updateRole),
+            getAccessToken: jest.fn().mockResolvedValue(mockGetAccessTokenResponse),
+            createMPin: jest.fn().mockResolvedValue(mockCreateMpin),
+            verifyMPin: jest.fn().mockResolvedValue(mockVerifiedMpin),
+            logoutUser: jest.fn().mockResolvedValue(mockUserLogoutResponse),
           },
         },
       ],
@@ -180,6 +226,44 @@ describe('UserController', () => {
     it('should update user KYC', async () => {
       const token = 'mockToken';
       expect(await controller.updateUserKyc(token)).toEqual(updateRole);
+    });
+  });
+
+  describe('createMPin', () => {
+    it('should successfully create an MPIN', async () => {
+      const token = 'mockToken';
+      const mPinDto: CreateMPinDto = {
+        mPin: '123456',
+      };
+
+      expect(await controller.createMPin(token, mPinDto)).toEqual(mockCreateMpin);
+    });
+  });
+
+  describe('verifyMPin', () => {
+    it('should successfully verify an MPIN', async () => {
+      const token = 'mockToken';
+      const mPinDto: CreateMPinDto = {
+        mPin: '123456',
+      };
+
+      expect(await controller.verifyMPin(token, mPinDto)).toEqual(mockVerifiedMpin);
+    });
+  });
+
+  describe('getAccessToken', () => {
+    it('should successfully get a refresh token', async () => {
+      const token = 'mockToken';
+
+      expect(await controller.getAccessToken(token)).toEqual(mockGetAccessTokenResponse);
+    });
+  });
+
+  describe('logoutUser', () => {
+    it('should successfully logout a user', async () => {
+      const token = 'mockToken';
+
+      expect(await controller.logoutUser(token)).toEqual(mockUserLogoutResponse);
     });
   });
 });

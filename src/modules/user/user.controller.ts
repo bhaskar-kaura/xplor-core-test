@@ -83,9 +83,9 @@ export class UserController {
 
   // Endpoint to get refresh token
   @Public()
-  @Get('refresh-token')
-  getRefreshToken(@ExtractToken() token: string) {
-    return this.userService.getRefreshToken(token);
+  @Get('access-token')
+  getAccessToken(@ExtractToken() token: string) {
+    return this.userService.getAccessToken(token);
   }
 
   @Put('logout')

@@ -108,7 +108,9 @@
       "!**/main.ts/**",
       "!**/user/user.module.ts/**",
       "!**/app.module.ts/**",
-      "!**/user/user.service.ts/**"
+      "!**/user/user.service.ts/**",
+      "!**/*userDetails.ts/**",
+      "!**/*extract-token.decorator.ts/**"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"

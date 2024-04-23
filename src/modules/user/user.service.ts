@@ -176,7 +176,7 @@ export class UserService {
     }
   }
 
-  async getRefreshToken(token: string) {
+  async getAccessToken(token: string) {
     try {
       return (
         await this.httpService.axiosRef.get(this.getUrl.refreshUserTokenUrl, {
