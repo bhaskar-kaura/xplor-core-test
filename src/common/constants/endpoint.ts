@@ -25,6 +25,8 @@ export const Endpoints = {
   verifyTokenUrl: '/api/v1/auth/verify-token',
   createUserMPinUrl: '/api/v1/auth/create-mpin',
   verifyUserMPinUrl: '/api/v1/auth/verify-mpin',
+  refreshUserTokenUrl: '/api/v1/auth/refresh-token',
+  logOutUserUrl: '/api/v1/auth/logout',
   userProfileUrl: '/api/v1/user',
   rolesUrl: '/api/v1/role',
   assignUserRoleUrl: '/api/v1/user/role',

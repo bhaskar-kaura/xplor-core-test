@@ -175,4 +175,33 @@ export class UserService {
       throw error?.response?.data;
     }
   }
+
+  async getRefreshToken(token: string) {
+    try {
+      return (
+        await this.httpService.axiosRef.get(this.getUrl.refreshUserTokenUrl, {
+          headers: { Authorization: token },
+        })
+      )?.data;
+    } catch (error) {
+      this.logger.error(USER_ERROR_MESSAGES.VERIFY_TOKEN, error);
+      throw error?.response?.data;
+    }
+  }
+
+  async logoutUser(token: string) {
+    try {
+      return (
+        await this.httpService.axiosRef.put(
+          this.getUrl.logOutUserUrl,
+          {},
+          {
+            headers: { Authorization: token },
+          },
+        )
+      )?.data;
+    } catch (error) {
+      throw error?.response?.data;
+    }
+  }
 }

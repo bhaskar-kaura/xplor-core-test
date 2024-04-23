@@ -78,6 +78,11 @@ export class GetUrl extends ConfigService {
   // URL to verify user MPIN via user service.
   verifyUserMPinUrl = this.userServiceUrl + Endpoints.verifyUserMPinUrl;
 
+  // URL to refresh user token via user service.
+  refreshUserTokenUrl = this.userServiceUrl + Endpoints.refreshUserTokenUrl;
+
+  logOutUserUrl = this.userServiceUrl + Endpoints.logOutUserUrl;
+
   // URL to fetch roles from user service.
   getRolesUrl = this.userServiceUrl + Endpoints.rolesUrl;
 

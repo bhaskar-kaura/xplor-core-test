@@ -15,7 +15,7 @@ export class TokenGuard implements CanActivate {
 
   // Implement the canActivate method required by the CanActivate interface.
   // This method is called automatically by NestJS to determine if the current request should be handled by the route handler.
-  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> | any {
     // Check if the route is marked as public using the Reflector. If so, allow unauthenticated access.
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(), // Check the handler (route handler method).
