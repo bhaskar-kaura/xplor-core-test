@@ -3,29 +3,21 @@ import { ArrayNotEmpty, ArrayUnique, IsArray, IsNotEmpty, IsString } from 'class
 
 // Define a DTO for creating a file request in the wallet
 export class CreateFileRequestDto {
-  // Validate that userId is a string and not empty
-  @IsNotEmpty()
-  readonly userId: string;
+  @IsNotEmpty({ message: 'Wallet ID cannot be empty' })
+  @IsString({ message: 'Wallet ID must be a string' })
+  readonly walletId: string;
 
-  // Validate that fileType is a string and not empty
-  @IsNotEmpty()
-  @IsString()
-  readonly fileType: string;
+  @IsNotEmpty({ message: 'Category cannot be empty' })
+  @IsString({ message: 'Category must be a string' })
+  readonly category: string;
 
-  // Validate that fileTags is an array, not empty, unique, and each element is a string
-  @IsArray()
-  @ArrayNotEmpty()
-  @ArrayUnique()
-  @IsString({ each: true })
-  readonly fileTags: string[];
+  @IsArray({ message: 'Tags must be an array' })
+  @ArrayNotEmpty({ message: 'Tags array cannot be empty' })
+  @ArrayUnique({ message: 'Tags array must contain unique values' })
+  @IsString({ each: true, message: 'Each tag must be a string' })
+  readonly tags: string[];
 
-  // Validate that fileName is a string and not empty
-  @IsNotEmpty()
-  @IsString()
-  readonly fileName: string;
-
-  // Validate that metadata is a string and not empty
-  @IsNotEmpty()
-  @IsString()
-  readonly metadata: string;
+  @IsNotEmpty({ message: 'Name cannot be empty' })
+  @IsString({ message: 'Name must be a string' })
+  readonly name: string;
 }

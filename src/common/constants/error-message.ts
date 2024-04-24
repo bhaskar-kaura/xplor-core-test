@@ -52,3 +52,22 @@ export const EAUTH_ERROR_MESSAGES = {
   GET_PROVIDERS: 'Failed to fetch providers', // Message for errors during fetching providers from eAuth
   GET_ACCESS_TOKEN: 'Failed to fetch accessToken', // Message for errors during fetching access token from eAuth
 };
+
+export const FilesErrors = {
+  INTERNAL_ERROR: 'There was an error in completing your request.',
+  FILE_CREATE_ERROR: 'There was an error in completing your request.',
+  FILES_NOT_FOUND: 'Files not found',
+  FILE_NOT_EXIST: 'File does not exist with the fileId!',
+  DELETE_PERMISSION_ERROR: "You don't have the permission to delete this file.",
+  RECOVER_PERMISSION_ERROR: "You don't have the permission to recover this file.",
+  FILE_DELETED_ERROR: 'You cannot view this file as its deleted, it needs to be recovered first.',
+  FILE_EXPIRED_ERROR: "You can't access this document as the file share has expired",
+  SHARE_PERMISSION_ERROR: "You don't have the permission to share this file.",
+  FILE_MAX_TIME_LIMIT_ERROR: 'You cannot request the file for more than 7 days.',
+  REQUEST_NOT_FOUND: 'Request with the requestId not found.',
+  REQUEST_DELETE_PERMISSION_ERROR: 'You cannot delete this share request as you did not make this share request.',
+  INVALID_ACTION: 'Please enter a valid action [ACCEPTED, REJECTED, PENDING]',
+  SHARE_ACTION_PERMISSION_ERROR: 'You cannot respond to this share request as you are not the file owner.',
+  FILE_MISSING_ERROR: 'Please attach a file document.',
+  INVALID_DELETE_ACTION: 'Incorrect action, please enter one of these [DELETE, RECOVER, PERMANENT_DELETE].',
+};

@@ -3,8 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 // import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-// import { CustomValidationPipe } from './common/validation/custom.validation';
-import { ValidationPipe } from '@nestjs/common';
+import { CustomValidationPipe } from './common/validation/custom.validation';
+// import { ValidationPipe } from '@nestjs/common';
 
 import { AppModule } from './modules/app/app.module';
 
@@ -19,10 +19,10 @@ async function bootstrap() {
   // app.useGlobalFilters(new GlobalExceptionFilter());
 
   // Uncomment to use a custom validation pipe
-  // app.useGlobalPipes(new CustomValidationPipe());
+  app.useGlobalPipes(new CustomValidationPipe());
 
   // Use the built-in ValidationPipe for class-based validation
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  // app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   // Retrieve the ConfigService to access environment variables
   const configService = app.get(ConfigService);
