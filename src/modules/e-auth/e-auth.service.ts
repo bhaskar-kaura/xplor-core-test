@@ -80,9 +80,12 @@ export class EAuthService {
       this.logger.debug('callBackQueryDto=========', callBackQueryDto);
       // Fetch user details using the provider and code from the callback query DTO
       const userDetails: any = (
-        await this.httpService.axiosRef.get(this.getUrl.getUserInfoUrl(callBackQueryDto.provider), {
-          params: callBackQueryDto,
-        })
+        await this.httpService.axiosRef.get(
+          this.getUrl.getUserInfoUrl(callBackQueryDto.provider ? callBackQueryDto.provider : PROVIDERS.DIGILOCKER),
+          {
+            params: callBackQueryDto,
+          },
+        )
       ).data;
       // Log the fetched user details for debugging purposes
       this.logger.debug('userDetails============', JSON.stringify(userDetails));
@@ -115,6 +118,7 @@ export class EAuthService {
         lastName: userName[userName.length - 1], // Assuming given_name is the last name
         firstName: userName[0], // Assuming given_name is the first name
         email: userDetails.email || '',
+        dob: userDetails.birthdate || '',
         address: JSON.stringify(userDetails.address) || '', // Using address if available, otherwise an empty string
         gender: userDetails.gender || '', // Using gender if available, otherwise an empty string
         provider: {

@@ -1,7 +1,9 @@
-// Import necessary decorators and functions from NestJS and class-validator/class-transformer libraries.
+// Custom validation pipe to validate DTOs using class-validator and class-transformer.
+// This pipe transforms plain JavaScript objects to class instances and validates them.
 import { ArgumentMetadata, BadRequestException, HttpStatus, Injectable, PipeTransform } from '@nestjs/common';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
+import { ValidationMessage } from '../constants/validation-message';
 
 import { CustomMessage } from '../enums/message';
 
@@ -22,7 +24,7 @@ export class CustomValidationPipe implements PipeTransform<any> {
     const errors = await validate(object);
     // If there are validation errors, throw a BadRequestException with the formatted errors.
     if (errors.length > 0) {
-      throw new BadRequestException(this.formatErrors(errors), CustomMessage.VERIFICATION_FAILED);
+      throw new BadRequestException(this.formatErrors(errors), ValidationMessage.failed);
     }
 
     // If validation passes, return the value.
@@ -38,13 +40,9 @@ export class CustomValidationPipe implements PipeTransform<any> {
 
   // Helper method to format validation errors into a more readable format.
   private formatErrors(errors: any[]) {
-    const formattedErrors = errors.reduce((acc, err) => {
-      // For each error, get the first constraint key (which represents the validation rule that failed)
-      // and use it to get the corresponding error message.
+    const formattedErrors = errors.reduce((_acc, err) => {
       const firstConstraintKey = Object.keys(err.constraints)[0];
-      // Accumulate the errors into an object keyed by the property name.
-      acc[err.property] = err.constraints[firstConstraintKey];
-      return acc;
+      return err.constraints[firstConstraintKey];
     }, {});
     // Return the formatted errors along with the HTTP status code for a bad request.
     return { message: formattedErrors, statusCode: HttpStatus.BAD_REQUEST };
