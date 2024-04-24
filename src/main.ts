@@ -8,6 +8,8 @@ import { CustomValidationPipe } from './common/validation/custom.validation';
 
 import { AppModule } from './modules/app/app.module';
 
+import { AppModule } from './modules/app/app.module';
+
 async function bootstrap() {
   // Create a Nest application instance
   const app = await NestFactory.create(AppModule, { cors: true });
