@@ -4,7 +4,7 @@ import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosInstance } from 'axios';
 
-import { LoggerMessage } from '../../constants/logger-message';
+import { LoggerEndpoints, LoggerMessage } from '../../constants/logger-message';
 import { LoggerPayloadDto } from '../../decorators/logger-payload-dto';
 
 @Injectable()
@@ -28,7 +28,7 @@ export class GrafanaLoggerService {
   async sendLog(logger: LoggerPayloadDto) {
     try {
       const payload = { ...logger, serviceName: this.serviceName, message: JSON.stringify(logger.message) };
-      return await this.axiosInstance.post('/info', payload);
+      return await this.axiosInstance.post(LoggerEndpoints.info, payload);
     } catch (error) {
       this.logger.error(error?.message);
       this.logger.log(JSON.stringify(logger));
@@ -37,7 +37,7 @@ export class GrafanaLoggerService {
   }
 
   async sendError(logger: LoggerPayloadDto) {
-    return this.axiosInstance.post('/error', {
+    return this.axiosInstance.post(LoggerEndpoints.error, {
       ...logger,
       serviceName: this.serviceName,
       message: JSON.stringify(logger.message),
@@ -47,7 +47,7 @@ export class GrafanaLoggerService {
   async sendDebug(logger: LoggerPayloadDto) {
     try {
       const payload = { ...logger, serviceName: this.serviceName, message: JSON.stringify(logger.message) };
-      return await this.axiosInstance.post('/debug', payload);
+      return await this.axiosInstance.post(LoggerEndpoints.debug, payload);
     } catch (error) {
       this.logger.error(error?.message);
       this.logger.log(JSON.stringify(logger));
@@ -58,7 +58,7 @@ export class GrafanaLoggerService {
   async sendWarn(logger: LoggerPayloadDto) {
     try {
       const payload = { ...logger, serviceName: this.serviceName, message: JSON.stringify(logger.message) };
-      return await this.axiosInstance.post('/warn', payload);
+      return await this.axiosInstance.post(LoggerEndpoints.warn, payload);
     } catch (error) {
       this.logger.error(error?.message);
       this.logger.log(JSON.stringify(logger));
@@ -69,7 +69,7 @@ export class GrafanaLoggerService {
   async sendVerbose(logger: LoggerPayloadDto) {
     try {
       const payload = { ...logger, serviceName: this.serviceName, message: JSON.stringify(logger.message) };
-      return await this.axiosInstance.post('/verbose', payload);
+      return await this.axiosInstance.post(LoggerEndpoints.verbose, payload);
     } catch (error) {
       this.logger.error(error?.message);
       this.logger.log(JSON.stringify(logger));

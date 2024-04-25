@@ -15,7 +15,7 @@ import { HttpModule } from '@nestjs/axios';
 import { GetUrl } from '../../common/utils/get-urls-utils.service';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TokenGuard } from '../../common/guard/token.guard';
-import { LoggingInterceptor } from 'Core-nest-backend/src/common/utils/logger-interceptor';
+import { LoggingInterceptor } from '../../common/utils/logger-interceptor';
 
 /**
  * AppModule is the root module of the application.
