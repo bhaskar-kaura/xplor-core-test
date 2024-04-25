@@ -1,6 +1,6 @@
 // axios.service.ts
 
-import { BadGatewayException, Injectable } from '@nestjs/common';
+import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosInstance } from 'axios';
 
@@ -13,10 +13,12 @@ export class GrafanaLoggerService {
   private readonly serviceName: string;
   private readonly configService: ConfigService;
   private readonly baseUrl: string;
+  private logger: Logger = new Logger(GrafanaLoggerService.name);
 
   constructor() {
     this.configService = new ConfigService();
     this.baseUrl = this.configService.get('GRAFANA_SERVICE_URL');
+
     this.axiosInstance = axios.create({
       baseURL: this.baseUrl, // Replace with your API base URL
     });
@@ -26,9 +28,11 @@ export class GrafanaLoggerService {
   async sendLog(logger: LoggerPayloadDto) {
     try {
       const payload = { ...logger, serviceName: this.serviceName, message: JSON.stringify(logger.message) };
-      return this.axiosInstance.post('/info', payload);
+      return await this.axiosInstance.post('/info', payload);
     } catch (error) {
-      throw new BadGatewayException(error?.message);
+      this.logger.error(error?.message);
+      this.logger.log(JSON.stringify(logger));
+      return new BadGatewayException(error?.message);
     }
   }
 
@@ -41,17 +45,35 @@ export class GrafanaLoggerService {
   }
 
   async sendDebug(logger: LoggerPayloadDto) {
-    const payload = { ...logger, serviceName: this.serviceName, message: JSON.stringify(logger.message) };
-    return this.axiosInstance.post('/debug', payload);
+    try {
+      const payload = { ...logger, serviceName: this.serviceName, message: JSON.stringify(logger.message) };
+      return await this.axiosInstance.post('/debug', payload);
+    } catch (error) {
+      this.logger.error(error?.message);
+      this.logger.log(JSON.stringify(logger));
+      return new BadGatewayException(error?.message);
+    }
   }
 
   async sendWarn(logger: LoggerPayloadDto) {
-    const payload = { ...logger, serviceName: this.serviceName, message: JSON.stringify(logger.message) };
-    return this.axiosInstance.post('/warn', payload);
+    try {
+      const payload = { ...logger, serviceName: this.serviceName, message: JSON.stringify(logger.message) };
+      return await this.axiosInstance.post('/warn', payload);
+    } catch (error) {
+      this.logger.error(error?.message);
+      this.logger.log(JSON.stringify(logger));
+      return new BadGatewayException(error?.message);
+    }
   }
 
   async sendVerbose(logger: LoggerPayloadDto) {
-    const payload = { ...logger, serviceName: this.serviceName, message: JSON.stringify(logger.message) };
-    return this.axiosInstance.post('/verbose', payload);
+    try {
+      const payload = { ...logger, serviceName: this.serviceName, message: JSON.stringify(logger.message) };
+      return await this.axiosInstance.post('/verbose', payload);
+    } catch (error) {
+      this.logger.error(error?.message);
+      this.logger.log(JSON.stringify(logger));
+      return new BadGatewayException(error?.message);
+    }
   }
 }
