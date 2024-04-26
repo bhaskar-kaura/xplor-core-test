@@ -34,7 +34,6 @@ export class UserController {
 
   // Endpoint to resend OTP
   @Public()
-  @Public()
   @Post('resend-otp')
   resendOtp(@Body() resendOtp: ResendOtpDto) {
     return this.userService.resendOtp(resendOtp);
@@ -80,5 +79,17 @@ export class UserController {
   @Put('verify-mpin')
   verifyMPin(@ExtractToken() token: string, @Body() mPin: CreateMPinDto) {
     return this.userService.verifyMPin(token, mPin);
+  }
+
+  // Endpoint to get refresh token
+  @Public()
+  @Get('access-token')
+  getAccessToken(@ExtractToken() token: string) {
+    return this.userService.getAccessToken(token);
+  }
+
+  @Put('logout')
+  logoutUser(@ExtractToken() token: string) {
+    return this.userService.logoutUser(token);
   }
 }
