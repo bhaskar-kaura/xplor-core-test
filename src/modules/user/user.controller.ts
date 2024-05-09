@@ -1,14 +1,22 @@
 // Import necessary decorators and components from NestJS
-import { Controller, Get, Post, Body, Patch, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Query, Delete } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { UserService } from './user.service';
 import { PhoneNumberDto } from './dto/phone-number.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dot';
 import { ExtractToken } from '../../common/decorators/extract-token.decorator';
-import { AssignRoleDto, ResendOtpDto } from './dto';
+import {
+  AssignRoleDto,
+  CreateGuestLanguageDto,
+  CreateUserDto,
+  QueryDeviceIdDto,
+  QueryOtpTypeDto,
+  ResetMpinDto,
+} from './dto';
 import { Public } from '../../common/decorators/public.decorators';
 import { CreateMPinDto } from './dto/create-mpin.dto';
+import { ExtractUserId } from '../../common/decorators/extract-userId';
 
 // Define the UserController with API tags for Swagger documentation
 @ApiTags('user')
@@ -18,25 +26,27 @@ export class UserController {
 
   // Endpoint to send OTP
   @Public()
-  @Public()
   @Post('/send-otp')
   sendOtp(@Body() phoneNumber: PhoneNumberDto) {
     return this.userService.sendOtp(phoneNumber);
   }
 
-  // Endpoint to verify OTP
-  @Public()
-  @Public()
-  @Post('/verify-otp')
-  verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) {
-    return this.userService.verifyOtp(verifyOtpDto);
+  // Endpoint to send MPIN OTP
+  @Put('/send-mpin-otp')
+  sendMpinOtp(@ExtractToken() token: string) {
+    return this.userService.sendMpinOtp(token);
   }
 
-  // Endpoint to resend OTP
+  // Endpoint to verify OTP
   @Public()
-  @Post('resend-otp')
-  resendOtp(@Body() resendOtp: ResendOtpDto) {
-    return this.userService.resendOtp(resendOtp);
+  @Post('/verify-otp')
+  verifyOtp(@Query() queryOtpTypeDto: QueryOtpTypeDto, @Body() verifyOtpDto: VerifyOtpDto) {
+    return this.userService.verifyOtp(queryOtpTypeDto, verifyOtpDto);
+  }
+
+  @Put('/reset-mpin')
+  resetMpin(@ExtractToken() token: string, @Body() resetMpinDto: ResetMpinDto) {
+    return this.userService.resetMpin(token, resetMpinDto);
   }
 
   // Endpoint to get user journey
@@ -88,8 +98,37 @@ export class UserController {
     return this.userService.getAccessToken(token);
   }
 
+  // Endpoint to logout user
   @Put('logout')
   logoutUser(@ExtractToken() token: string) {
     return this.userService.logoutUser(token);
+  }
+
+  // Endpoint to create device language preference
+  @Public()
+  @Post('language-preference')
+  createDeviceLanguagePreference(@Body() createLanguage: CreateGuestLanguageDto) {
+    return this.userService.createDeviceLanguagePreference(createLanguage);
+  }
+
+  // Endpoint to get device language preference
+  @Public()
+  @Get('language-preference')
+  getDeviceLanguagePreference(@Query() queryDeviceIdDto: QueryDeviceIdDto) {
+    return this.userService.getDeviceLanguagePreference(queryDeviceIdDto);
+  }
+
+  // Endpoint to delete device language preference
+  @Public()
+  @Delete('language-preference')
+  deleteDeviceLanguagePreference(@Query() queryDeviceIdDto: QueryDeviceIdDto) {
+    return this.userService.deleteDeviceLanguagePreference(queryDeviceIdDto);
+  }
+
+  // Endpoint to create user
+  @Public()
+  @Post()
+  createUser(@ExtractToken() token: string, @ExtractUserId() userId: string, @Body() user: CreateUserDto) {
+    return this.userService.createUser(token, userId, user);
   }
 }

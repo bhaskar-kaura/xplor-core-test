@@ -94,4 +94,21 @@ export class GetUrl extends ConfigService {
 
   // URL to fetch user journey details via user service.
   getUserJourneyUrl = this.userServiceUrl + Endpoints.userJourneyUrl;
+
+  // URL to send MPIN OTP via user service.
+  getUserSendMpinOtpUrl = this.userServiceUrl + Endpoints.userSendMpinOtpUrl;
+
+  // URL to reset MPIN via user service.
+  getUserResetMpinUrl = this.userServiceUrl + Endpoints.resetMpinUrl;
+
+  // URL to create device language preference via user service.
+  getCreateDeviceLanguageUrl = this.userServiceUrl + Endpoints.createDeviceLanguageUrl;
+
+  // URL to fetch device language preference via user service.
+  getDeviceLanguageUrl = this.userServiceUrl + Endpoints.getDeviceLanguageUrl;
+
+  // URL to delete device language preference via user service.
+  getDeleteDeviceLanguageUrl = this.userServiceUrl + Endpoints.deleteDeviceLanguageUrl;
+  // URL to create user via user service.
+  createUserUrl = this.userServiceUrl + Endpoints.createUserUrl;
 }

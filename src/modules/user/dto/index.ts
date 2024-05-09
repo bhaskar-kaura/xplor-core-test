@@ -10,3 +10,7 @@ export * from './verify-otp.dot';
 export * from './assign-role.dto';
 export * from './resend-otp.dto';
 export * from './create-mpin.dto';
+export * from './query-otp-type.dto';
+export * from './reset-mpin.dto';
+export * from './create-guest-language.dto';
+export * from './query-device-id.dto';

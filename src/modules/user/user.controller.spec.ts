@@ -5,9 +5,8 @@ import { faker } from '@faker-js/faker';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { PhoneNumberDto } from './dto/phone-number.dto';
-import { ResendOtpDto } from './dto/resend-otp.dto';
 import { AssignRoleDto } from './dto/assign-role.dto';
-import { CreateMPinDto, VerifyOtpDto } from './dto';
+import { CreateMPinDto, QueryOtpTypeDto, VerifyOtpDto } from './dto';
 
 // Define the test suite for UserController
 describe('UserController', () => {
@@ -195,18 +194,11 @@ describe('UserController', () => {
         key: faker.string.uuid(),
         otp: faker.number.int({ min: 100000, max: 999999 }).toString(),
       };
-      expect(await controller.verifyOtp(verifyOtpDto)).toEqual(verifyOtp);
+      const query = new QueryOtpTypeDto();
+      expect(await controller.verifyOtp(query, verifyOtpDto)).toEqual(verifyOtp);
     });
   });
 
-  describe('resendOtp', () => {
-    it('should resend OTP', async () => {
-      const resendOtpDto: ResendOtpDto = {
-        key: faker.string.uuid(),
-      };
-      expect(await controller.resendOtp(resendOtpDto)).toEqual(resendOtp);
-    });
-  });
   describe('findRoles', () => {
     it('should find roles', async () => {
       expect(await controller.findRoles('token')).toEqual(findRoles);

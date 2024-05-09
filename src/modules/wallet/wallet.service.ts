@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+
 import { GetUrl } from '../../common/utils';
 import {
   CreateWalletDto,
