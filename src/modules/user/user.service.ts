@@ -5,8 +5,18 @@ import { HttpService } from '@nestjs/axios';
 
 import { PhoneNumberDto } from './dto/phone-number.dto';
 import { GetUrl } from '../../common/utils';
-import { AssignRoleDto, CreateMPinDto, ResendOtpDto, VerifyOtpDto } from './dto';
+import {
+  AssignRoleDto,
+  CreateGuestLanguageDto,
+  CreateMPinDto,
+  CreateUserDto,
+  QueryDeviceIdDto,
+  QueryOtpTypeDto,
+  VerifyOtpDto,
+} from './dto';
 import { USER_ERROR_MESSAGES } from '../../common/constants/error-message';
+import { ResetMpinDto } from './dto/reset-mpin.dto';
+import { CreateWalletDto } from '../wallet/dto';
 
 // Define the UserService with necessary methods for user operations
 @Injectable()
@@ -113,26 +123,55 @@ export class UserService {
       throw error?.response?.data;
     }
   }
-  // Method to verify OTP
-  async verifyOtp(verifyOtpDto: VerifyOtpDto): Promise<any> {
+
+  async sendMpinOtp(token: string) {
     try {
-      return (await this.httpService.axiosRef.post(this.getUrl.getUserVerifyOtpUrl, verifyOtpDto)).data;
+      return (
+        await this.httpService.axiosRef.put(
+          this.getUrl.getUserSendMpinOtpUrl,
+          {},
+          { headers: { Authorization: token } },
+        )
+      ).data;
+    } catch (error) {
+      this.logger.error(USER_ERROR_MESSAGES.SEND_OTP, error);
+      throw error?.response?.data;
+    }
+  }
+  // Method to verify OTP
+  async verifyOtp(queryOtpTypeDto: QueryOtpTypeDto, verifyOtpDto: VerifyOtpDto): Promise<any> {
+    try {
+      return (
+        await this.httpService.axiosRef.post(this.getUrl.getUserVerifyOtpUrl, verifyOtpDto, { params: queryOtpTypeDto })
+      ).data;
     } catch (error) {
       this.logger.error(USER_ERROR_MESSAGES.VERIFY_OTP, error);
       throw error.response.data;
     }
   }
 
-  // Method to resend OTP
-  async resendOtp(resendOtp: ResendOtpDto) {
+  async resetMpin(token: string, resetMpinDto: ResetMpinDto) {
     try {
-      const otp = (await this.httpService.axiosRef.post(this.getUrl.getUserResendOtpUrl, resendOtp)).data;
-      return otp;
+      return (
+        await this.httpService.axiosRef.put(this.getUrl.getUserResetMpinUrl, resetMpinDto, {
+          headers: { Authorization: token },
+        })
+      ).data;
     } catch (error) {
-      this.logger.error(USER_ERROR_MESSAGES.RESEND_OTP, error);
-      throw error.response.data;
+      this.logger.error(USER_ERROR_MESSAGES.UPDATER_USER_MPIN, error);
+      throw error?.response?.data;
     }
   }
+  // // Method to resend OTP
+  // async resendOtp(resendOtp: ResendOtpDto) {
+  //   try {
+  //     const otp = (await this.httpService.axiosRef.post(this.getUrl.getUserResendOtpUrl, resendOtp)).data;
+  //     return otp;
+  //   } catch (error) {
+  //     this.logger.error(USER_ERROR_MESSAGES.RESEND_OTP, error);
+  //     throw error.response.data;
+  //   }
+  // }
 
   // Method to validate token
   async validateToken(token: string) {
@@ -201,6 +240,76 @@ export class UserService {
         )
       )?.data;
     } catch (error) {
+      throw error?.response?.data;
+    }
+  }
+
+  async createDeviceLanguagePreference(createLanguage: CreateGuestLanguageDto) {
+    try {
+      return (await this.httpService.axiosRef.post(this.getUrl.getCreateDeviceLanguageUrl, createLanguage))?.data;
+    } catch (error) {
+      throw error?.response?.data;
+    }
+  }
+
+  async getDeviceLanguagePreference(queryDeviceIdDto: QueryDeviceIdDto) {
+    try {
+      return (
+        await this.httpService.axiosRef.get(this.getUrl.getDeviceLanguageUrl, {
+          params: queryDeviceIdDto,
+        })
+      )?.data;
+    } catch (error) {
+      throw error?.response?.data;
+    }
+  }
+
+  async deleteDeviceLanguagePreference(queryDeviceIdDto: QueryDeviceIdDto) {
+    try {
+      return (
+        await this.httpService.axiosRef.delete(this.getUrl.getDeleteDeviceLanguageUrl, {
+          params: queryDeviceIdDto,
+        })
+      )?.data;
+    } catch (error) {
+      throw error?.response?.data;
+    }
+  }
+  // Method to create user profile for the implimenter
+  async createUser(token: string, userId: string, user: CreateUserDto) {
+    try {
+      const roles = (
+        await this.httpService.axiosRef.get(this.getUrl.getRolesUrl, { headers: { Authorization: token } })
+      ).data?.data;
+      const role = roles.map((element: any) => {
+        if (element.type === user.role) return element;
+      });
+      const roleId = role[0]?._id;
+      const userDataForWallet = new CreateWalletDto(user.kyc.firstName + ' ' + user.kyc.lastName, user.kyc.email, '');
+      const newWallet = (
+        await this.httpService.axiosRef.post(
+          this.getUrl.getWalletUrl,
+          { userId: userId, ...userDataForWallet },
+          {
+            headers: { Authorization: token },
+          },
+        )
+      ).data?.data;
+      const walletId = newWallet?._id;
+
+      const upadatedUser = (
+        await this.httpService.axiosRef.patch(
+          this.getUrl.getUserProfileUrl,
+          { wallet: walletId, role: roleId, kyc: user.kyc }, //need to create the inerface
+          {
+            headers: { Authorization: token },
+          },
+        )
+      ).data;
+      return upadatedUser;
+      // return (await this.httpService.axiosRef.post(this.getUrl.createUserUrl, user)).data;
+    } catch (error) {
+      this.logger.error(USER_ERROR_MESSAGES.CREATE_USER, error);
       throw error?.response?.data;
     }
   }

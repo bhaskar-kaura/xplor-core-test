@@ -11,6 +11,7 @@ services:
       - E_AUTH_URI=${E_AUTH_URI} # Environment variable for the e-auth service URI
       - WALLET_URL=${WALLET_URL} # Environment variable for the wallet service URI
       - USER_SERVICE_URL= ${USER_SERVICE_URL} # Environment variable for the user service URI
+      - GRAFANA_SERVICE_URL= ${GRAFANA_SERVICE_URL} # Environment variable for the grafana service URI
       - ORGANIZATION= ${ORGANIZATION} # Environment variable for the organization name
     ports:
       - 1067:${PORT} # Maps the container port to the host port
