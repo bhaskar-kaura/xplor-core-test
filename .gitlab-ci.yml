@@ -3,12 +3,10 @@ stages:
 
 deploy:dev:
   stage: dev
-
   tags:
     - gcp
-
   script:
-    - echo "Deployment on Server."
+    - echo "Deployment on Dev Server."
     - Path=$(pwd)
     - cd /home/ubuntu/script && ./env_script.sh dev Core-nest-backend-dev $VAULT_TOKEN && cd $Path
     - mv /home/ubuntu/script/.env $Path
@@ -17,7 +15,7 @@ deploy:dev:
         if [[ -d Core-nest-backend ]]; then
           cd /home/ubuntu/Core-nest-backend
           docker-compose down
-          cd /home/ubuntu && sudo rm -rf Core-nest-backend
+          cd /home/ubuntu/ && sudo rm -rf Core-nest-backend
         fi "
 
     - sshpass -p $Xplor_Password ssh $Xplor_Username@$Xplor_IP  "git clone -b develop https://user:'$GITLAB_ACCESS_TOKEN'@gitlab.thewitslab.com/wil-workspace/xplor/Core-nest-backend.git"
