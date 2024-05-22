@@ -40,6 +40,7 @@ export class StgService {
     sendDataToClients: (transactionId: string, data: any, connectedClients: Map<string, any>) => void,
   ) {
     try {
+      await this.httpService.axiosRef.post(this.getUrl.getIlOnSearchUrl, searchRequestDto);
       const deviceId = this.deviceIdMapper.get(searchRequestDto?.context?.transaction_id);
       const deviceInfo = await this.getDeviceService.getDevicePreferenceById(deviceId);
       const targetLanguageCode = deviceInfo?.languageCode || this.serverDefaultLanguage;
