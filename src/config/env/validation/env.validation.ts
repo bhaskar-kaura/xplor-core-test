@@ -29,4 +29,6 @@ export default () => ({
   GRAFANA_SERVICE_URL: Joi.string().required().default('http://localhost:7000'),
   // Validate the DEFAULT_LANGUAGE environment variable. It must be a string and is required. Default to 'en' if not provided.
   DEFAULT_LANGUAGE: Joi.string().required().default('en'),
+  // Validate the IL_SERVICE_URL environment variable. It must be a string and is required. Default to 'http://localhost:8000' if not provided.
+  IL_SERVICE_URL: Joi.string().required().default('http://localhost:8000'),
 });

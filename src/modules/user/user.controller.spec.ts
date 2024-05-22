@@ -197,8 +197,9 @@ describe('UserController', () => {
         key: faker.string.uuid(),
         otp: faker.number.int({ min: 100000, max: 999999 }).toString(),
       };
+      const otp = 'otp';
       const query = new QueryOtpTypeDto();
-      expect(await controller.verifyOtp(query, verifyOtpDto)).toEqual(verifyOtp);
+      expect(await controller.verifyOtp(otp, query, verifyOtpDto)).toEqual(verifyOtp);
     });
   });
 

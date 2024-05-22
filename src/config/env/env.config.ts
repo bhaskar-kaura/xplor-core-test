@@ -25,4 +25,6 @@ export default () => ({
   llmServiceUrl: process.env.LLM_SERVICE_URL,
   // server default language
   serverDefaultLanguage: process.env.DEFAULT_LANGUAGE,
+  // Use the IL_SERVICE_URL environment variable to set the URI for the IL service.
+  ilServiceUrl: process.env.IL_SERVICE_URL,
 });

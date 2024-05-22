@@ -16,6 +16,7 @@ export class GetUrl extends ConfigService {
   llmServiceUrl = this.get('llmServiceUrl');
   openStreetMapApiUrl = this.get('openStreetMapApiUrl');
   stgServiceUrl = this.get('stgServiceUrl');
+  ilServiceUrl = this.get('ilServiceUrl');
 
   // URL to get list of providers from eAuth service.
   getProvidersUrl = this.eAuthUrl + Endpoints.eAuthProvidersUrl;
@@ -145,4 +146,6 @@ export class GetUrl extends ConfigService {
 
   // URL to device language preference api in user service
   getDevicePreferenceUrl = this.userServiceUrl + Endpoints.deviceLanguagePreference;
+  // URL to implementation layer on_search endpoint.
+  getIlOnSearchUrl = this.ilServiceUrl + Endpoints.ilOnSearchUrl;
 }
