@@ -40,8 +40,7 @@ export class StgService {
     sendDataToClients: (transactionId: string, data: any, connectedClients: Map<string, any>) => void,
   ) {
     try {
-      await this.httpService.axiosRef.post(this.getUrl.getIlOnSearchUrl, searchRequestDto);
-            console.log('onSearchService11', this.getUrl.getIlOnSearchUrl);
+      console.log('onSearchService11', this.getUrl.getIlOnSearchUrl);
       const deviceId = this.deviceIdMapper.get(searchRequestDto?.context?.transaction_id);
       const deviceInfo = await this.getDeviceService.getDevicePreferenceById(deviceId);
       console.log('onSearchService22',deviceInfo);
@@ -49,6 +48,7 @@ export class StgService {
       // Send this response in SSE/Socket to the mobile app
       await this.translation.translateItemPayload(searchRequestDto?.data, targetLanguageCode);
       sendDataToClients(searchRequestDto?.context?.transaction_id, searchRequestDto?.data, connectedClients);
+      await this.httpService.axiosRef.post(this.getUrl.getIlOnSearchUrl, searchRequestDto);
       // console.log('translatedData', JSON.stringify(translatedData))
       return searchRequestDto;
     } catch (error) {
