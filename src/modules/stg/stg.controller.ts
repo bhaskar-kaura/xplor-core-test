@@ -25,6 +25,7 @@ export class StgController {
   @Post('on_search')
   onSearch(@Body() searchResponse: any) {
     // Bind the context of sendDataToClients to this instance
+         console.log('OnSearch00', searchResponse);
     return this.stgService.onSearch(searchResponse, this.connectedClients, this.sendDataToClients);
   }
 
