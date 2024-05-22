@@ -47,10 +47,19 @@ export const USER_ERROR_MESSAGES = {
   ASSIGN_USER_ROLE: 'Error in assigning user role', // Message for errors during assigning user role
   GET_USER_ROLES: 'Error in fetching user roles', // Message for errors during fetching user roles
   UPDATER_USER_MPIN: 'Error in updating user mpin', // Message for errors during updating user mpin
+  UPDATE_USER_LANGUAGE_PREFERENCE: 'Error in updating user language preference', // Message for errors during updating user language preference
+  CREATE_DEVICE_PREFERENCE: 'Error in creating device preference for device', // Message for errors creating device  preference
+  UPDATE_DEVICE_PREFERENCE: 'Error in updating device preference for device', //  Message for errors updating device  preference
+  GET_DEVICE_PREFERENCE: 'Error in fetching device preference for device', //  Message for errors fetching device  preference
 };
 
 export const EAUTH_ERROR_MESSAGES = {
   GET_USER_DETAILS: 'Failed to fetch userDetails', // Message for errors during fetching user details from eAuth
   GET_PROVIDERS: 'Failed to fetch providers', // Message for errors during fetching providers from eAuth
   GET_ACCESS_TOKEN: 'Failed to fetch accessToken', // Message for errors during fetching access token from eAuth
+};
+
+// Define a constant object for general error messages
+export const DEVICE_ERROR_MESSAGES = {
+  DEVICE_ID_REQUIRED: 'Device id is required', //Device id is required message
 };

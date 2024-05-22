@@ -12,6 +12,10 @@ export class GetUrl extends ConfigService {
   eAuthUrl = this.get('eAuthUri');
   walletUrl = this.get('walletUrl');
   userServiceUrl = this.get('userServiceUrl');
+  languageServiceUrl = this.get('languageServiceUrl');
+  llmServiceUrl = this.get('llmServiceUrl');
+  openStreetMapApiUrl = this.get('openStreetMapApiUrl');
+  stgServiceUrl = this.get('stgServiceUrl');
 
   // URL to get list of providers from eAuth service.
   getProvidersUrl = this.eAuthUrl + Endpoints.eAuthProvidersUrl;
@@ -111,4 +115,21 @@ export class GetUrl extends ConfigService {
   getDeleteDeviceLanguageUrl = this.userServiceUrl + Endpoints.deleteDeviceLanguageUrl;
   // URL to create user via user service.
   createUserUrl = this.userServiceUrl + Endpoints.createUserUrl;
+  // URL to fetch supported languages from AI ML service.
+  getTranslateLanguageUrl = this.languageServiceUrl + Endpoints.translateLanguageUrl;
+  // URL to fetch supported languages from AI ML service.
+  getSupportedLanguageUrl = this.languageServiceUrl + Endpoints.getSupportedLanguagesUrl;
+  // URL to get RegionLanguages from User service database.
+  getRegionLanguageUrl = this.userServiceUrl + Endpoints.getRegionLanguageUrl;
+  // URL to get address with latitude and longitude from Open Street Map service.
+  getAddressWithLatLongUrl = this.openStreetMapApiUrl + Endpoints.getAddressWithLatLongUrl;
+
+  // URL to get languages for country and state from LLM service.
+  getLanguagesForCountryAndStateUrl = this.llmServiceUrl + Endpoints.getLanguagesForCountryAndStateUrl;
+  updateUserLanguagePreferenceUrl = this.userServiceUrl + Endpoints.updateUserLanguagePreferenceUrl;
+
+  getStgSearchUrl = this.stgServiceUrl + Endpoints.stgSearchUrl;
+
+  // URL to device language preference api in user service
+  getDevicePreferenceUrl = this.userServiceUrl + Endpoints.deviceLanguagePreference;
 }

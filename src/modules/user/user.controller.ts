@@ -1,22 +1,24 @@
 // Import necessary decorators and components from NestJS
-import { Controller, Get, Post, Body, Patch, Put, Query, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Put, Query, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { UserService } from './user.service';
 import { PhoneNumberDto } from './dto/phone-number.dto';
-import { VerifyOtpDto } from './dto/verify-otp.dot';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ExtractToken } from '../../common/decorators/extract-token.decorator';
 import {
   AssignRoleDto,
-  CreateGuestLanguageDto,
+  CreateDevicePreferenceDto,
+  CreateLanguageDto,
   CreateUserDto,
-  QueryDeviceIdDto,
   QueryOtpTypeDto,
   ResetMpinDto,
+  UpdateDevicePreferenceDto,
 } from './dto';
 import { Public } from '../../common/decorators/public.decorators';
 import { CreateMPinDto } from './dto/create-mpin.dto';
 import { ExtractUserId } from '../../common/decorators/extract-userId';
+import { DeviceIdDto } from '../../common/utils/dto/device-dto';
 
 // Define the UserController with API tags for Swagger documentation
 @ApiTags('user')
@@ -57,8 +59,9 @@ export class UserController {
 
   // Endpoint to find roles
   @Get('roles')
-  findRoles(@ExtractToken() token: string) {
-    return this.userService.findRoles(token);
+  @Public()
+  findRoles(@Query() deviceIdDto: DeviceIdDto) {
+    return this.userService.findRoles(deviceIdDto);
   }
 
   // Endpoint to assign role
@@ -104,31 +107,33 @@ export class UserController {
     return this.userService.logoutUser(token);
   }
 
-  // Endpoint to create device language preference
-  @Public()
-  @Post('language-preference')
-  createDeviceLanguagePreference(@Body() createLanguage: CreateGuestLanguageDto) {
-    return this.userService.createDeviceLanguagePreference(createLanguage);
-  }
-
-  // Endpoint to get device language preference
-  @Public()
-  @Get('language-preference')
-  getDeviceLanguagePreference(@Query() queryDeviceIdDto: QueryDeviceIdDto) {
-    return this.userService.getDeviceLanguagePreference(queryDeviceIdDto);
-  }
-
-  // Endpoint to delete device language preference
-  @Public()
-  @Delete('language-preference')
-  deleteDeviceLanguagePreference(@Query() queryDeviceIdDto: QueryDeviceIdDto) {
-    return this.userService.deleteDeviceLanguagePreference(queryDeviceIdDto);
-  }
-
   // Endpoint to create user
   @Public()
   @Post()
   createUser(@ExtractToken() token: string, @ExtractUserId() userId: string, @Body() user: CreateUserDto) {
     return this.userService.createUser(token, userId, user);
+  }
+
+  @Patch('language-preference')
+  updateUserLanguagePreference(@ExtractToken() token: string, @Body() createLanguageDto: CreateLanguageDto) {
+    return this.userService.updateUserLanguagePreference(token, createLanguageDto);
+  }
+
+  @Public()
+  @Post('device-preference')
+  createDevicePreference(@Body() createDevicePreferenceDto: CreateDevicePreferenceDto) {
+    return this.userService.createDevicePreference(createDevicePreferenceDto);
+  }
+
+  @Public()
+  @Patch('device-preference')
+  updateDevicePreference(@Body() updateDevicePreferenceDto: UpdateDevicePreferenceDto) {
+    return this.userService.updateDevicePreference(updateDevicePreferenceDto);
+  }
+
+  @Public()
+  @Get('device-preference/:id')
+  getDevicePreferenceByDeviceId(@Param('id') deviceId: string) {
+    return this.userService.getDevicePreferenceById(deviceId);
   }
 }

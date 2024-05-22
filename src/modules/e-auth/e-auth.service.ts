@@ -32,7 +32,7 @@ export class EAuthService {
         await this.httpService.axiosRef.get(this.getUrl.getUserInfoUrl(createEAuthDto.provider), {
           params: { code: createEAuthDto.code },
         })
-      ).data;
+      )?.data;
       return userDetails;
     } catch (error) {
       this.logger.error(EAUTH_ERROR_MESSAGES.GET_USER_DETAILS, error);
@@ -49,7 +49,7 @@ export class EAuthService {
             Authorization: token,
           },
         })
-      ).data;
+      )?.data;
       return responseData;
     } catch (error) {
       this.logger.error(EAUTH_ERROR_MESSAGES.GET_PROVIDERS, error);
@@ -83,7 +83,7 @@ export class EAuthService {
         await this.httpService.axiosRef.get(this.getUrl.getUserInfoUrl(callBackQueryDto.provider), {
           params: callBackQueryDto,
         })
-      ).data;
+      )?.data;
       // Log the fetched user details for debugging purposes
       this.logger.debug('userDetails============', JSON.stringify(userDetails));
       // Check if there's an error in the user details and throw a BadRequestException if so
@@ -102,7 +102,7 @@ export class EAuthService {
           email: userDetails?.email || '',
           organization: organization,
         })
-      ).data;
+      )?.data;
       this.logger.debug('createdWalletData', JSON.stringify(createdWalletData));
 
       // Extract the wallet ID from the created wallet data

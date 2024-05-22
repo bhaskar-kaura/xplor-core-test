@@ -7,6 +7,7 @@ import { UserService } from './user.service';
 import { PhoneNumberDto } from './dto/phone-number.dto';
 import { AssignRoleDto } from './dto/assign-role.dto';
 import { CreateMPinDto, QueryOtpTypeDto, VerifyOtpDto } from './dto';
+import { DeviceIdDto } from '../../../src/common/utils/dto/device-dto';
 
 // Define the test suite for UserController
 describe('UserController', () => {
@@ -183,6 +184,8 @@ describe('UserController', () => {
     it('should send OTP', async () => {
       const phoneNumberDto: PhoneNumberDto = {
         phoneNumber: faker.phone.number(),
+        targetLanguageCode: 'hi',
+        deviceId: '12345',
       };
       expect(await controller.sendOtp(phoneNumberDto)).toEqual(sendOtp);
     });
@@ -201,7 +204,10 @@ describe('UserController', () => {
 
   describe('findRoles', () => {
     it('should find roles', async () => {
-      expect(await controller.findRoles('token')).toEqual(findRoles);
+      const deviceIdDto: DeviceIdDto = {
+        deviceId: '12345',
+      };
+      expect(await controller.findRoles(deviceIdDto)).toEqual(findRoles);
     });
   });
   describe('assignRole', () => {
