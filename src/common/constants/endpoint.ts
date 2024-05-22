@@ -56,4 +56,12 @@ export const Endpoints = {
 
   // STG Service URLs
   stgSearchUrl: '/app/v1/search',
+
+  stgSelectUrl: '/app/v1/select',
+
+  stgInitUrl: '/app/v1/init',
+
+  stgConfirmUrl: '/app/v1/confirm',
+
+  stgStatusUrl: '/app/v1/status',
 };
