@@ -9,4 +9,10 @@ export class VerifyOtpDto {
   // Optional OTP field for verification
   @IsOptional()
   otp: string;
+
+  @IsOptional()
+  deviceId?: string;
+
+  @IsOptional()
+  targetLanguageCode?: string;
 }

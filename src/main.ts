@@ -5,8 +5,11 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 // import { CustomValidationPipe } from './common/validation/custom.validation';
 // import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
+import { HttpService } from '@nestjs/axios';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './modules/app/app.module';
+import { CatchExceptionsTranslator } from './common/exception-filter/catch-block-exception';
+import { TranslateService } from './common/utils/translate/translate.service';
 
 async function bootstrap() {
   // Create a Nest application instance
@@ -23,6 +26,10 @@ async function bootstrap() {
 
   // Use the built-in ValidationPipe for class-based validation
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+
+  app.useGlobalFilters(
+    new CatchExceptionsTranslator(new ConfigService(), new TranslateService(new ConfigService(), new HttpService())),
+  );
 
   // Retrieve the ConfigService to access environment variables
   const configService = app.get(ConfigService);

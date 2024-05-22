@@ -38,4 +38,22 @@ export const Endpoints = {
   createDeviceLanguageUrl: '/api/v1/language-preference',
   getDeviceLanguageUrl: '/api/v1/language-preference',
   deleteDeviceLanguageUrl: '/api/v1/language-preference',
+  getRegionLanguageUrl: '/api/v1/language-preference/region',
+  updateUserLanguagePreferenceUrl: '/api/v1/user/language-preference',
+
+  //User Service for Device Preference
+  deviceLanguagePreference: '/api/v1/device-preference',
+
+  // Language AI ML service URLs
+  translateLanguageUrl: '/translate/',
+  getSupportedLanguagesUrl: '/supported_languages',
+
+  // Open Street Map service URLs
+  getAddressWithLatLongUrl: '/reverse',
+
+  // LLM service URLs
+  getLanguagesForCountryAndStateUrl: '/language_selection',
+
+  // STG Service URLs
+  stgSearchUrl: '/app/v1/search',
 };

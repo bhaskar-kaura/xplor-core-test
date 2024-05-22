@@ -13,6 +13,11 @@ services:
       - USER_SERVICE_URL= ${USER_SERVICE_URL} # Environment variable for the user service URI
       - GRAFANA_SERVICE_URL= ${GRAFANA_SERVICE_URL} # Environment variable for the grafana service URI
       - ORGANIZATION= ${ORGANIZATION} # Environment variable for the organization name
+      - STG_SERVICE_URL= ${STG_SERVICE_URL}
+      - LLM_SERVICE_URL=${LLM_SERVICE_URL}
+      - OPEN_STREET_URL=${OPEN_STREET_URL}
+      - LANGUAGE_SERVICE_URL=${LANGUAGE_SERVICE_URL}
+      - DEFAULT_LANGUAGE=${DEFAULT_LANGUAGE}
     ports:
       - 1067:${PORT} # Maps the container port to the host port
     networks:
