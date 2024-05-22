@@ -58,6 +58,7 @@ export class StgController {
   async sendDataToClients(transactionId: string, data: any, connectedClients: Map<string, any>): Promise<void> {
     try {
       console.log('SSEDatareceived', transactionId);
+      console.log('connectedClients', connectedClients);
       if (connectedClients.has(transactionId)) {
         // eslint-disable-next-line no-console
         console.log('sseData', `data: ${JSON.stringify(data)}`);
