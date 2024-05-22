@@ -22,6 +22,8 @@ import { TranslateService } from '../../common/utils/translate/translate.service
 import { GetDeviceService } from '../../common/utils/getDevice/get-device';
 import { DeviceIdDto } from '../../common/utils/dto/device-dto';
 import { KeysForTitleAndDes } from '../../common/constants/keys-to-translate/translate';
+import { GetUserService } from '../../common/utils/getUser/get-user';
+import { IUserProfile } from 'Core-nest-backend/src/common/interfaces';
 // import { filterArrayOfObjects } from '../../common/utils/filter-array/filter-array';
 // import { DOMAINS } from '../../common/constants/domains/domains';
 // import { CATEGORIES } from '../../common/constants/categories/categories';
@@ -38,6 +40,7 @@ export class UserService {
     private readonly configService: ConfigService,
     private readonly getDeviceService: GetDeviceService,
     private readonly translateService: TranslateService,
+    private readonly getUserService: GetUserService,
   ) {
     this.serverDefaultLanguage = this.configService.get('serverDefaultLanguage');
   }
@@ -156,7 +159,10 @@ export class UserService {
   }
 
   async sendMpinOtp(token: string) {
+    let targetLanguageCode: string = this.serverDefaultLanguage;
     try {
+      const user: IUserProfile = await this.getUserService.getUserByToken(token);
+      targetLanguageCode = user.languagePreference;
       return (
         await this.httpService.axiosRef.put(
           this.getUrl.getUserSendMpinOtpUrl,
@@ -166,27 +172,41 @@ export class UserService {
       )?.data;
     } catch (error) {
       this.logger.error(USER_ERROR_MESSAGES.SEND_OTP, error);
+      error.response.data.targetLanguageCode = targetLanguageCode;
       throw error?.response?.data;
     }
   }
   // Method to verify OTP
-  async verifyOtp(queryOtpTypeDto: QueryOtpTypeDto, verifyOtpDto: VerifyOtpDto): Promise<any> {
+  async verifyOtp(token: string, queryOtpTypeDto: QueryOtpTypeDto, verifyOtpDto: VerifyOtpDto): Promise<any> {
+    let targetLanguageCode: string = this.serverDefaultLanguage;
     try {
-      const deviceInfo = await this.getDeviceService.getDevicePreferenceById(verifyOtpDto.deviceId);
-      const targetLanguageCode = deviceInfo?.languageCode || this.serverDefaultLanguage;
-      verifyOtpDto.targetLanguageCode = targetLanguageCode;
+      if (verifyOtpDto.deviceId) {
+        const deviceInfo = await this.getDeviceService.getDevicePreferenceById(verifyOtpDto.deviceId);
+        targetLanguageCode = deviceInfo?.languageCode || this.serverDefaultLanguage;
+      } else {
+        const user: IUserProfile = await this.getUserService.getUserByToken(token);
+
+        targetLanguageCode = user.languagePreference;
+      }
+
       return (
-        await this.httpService.axiosRef.post(this.getUrl.getUserVerifyOtpUrl, verifyOtpDto, { params: queryOtpTypeDto })
+        await this.httpService.axiosRef.post(this.getUrl.getUserVerifyOtpUrl, verifyOtpDto, {
+          params: queryOtpTypeDto,
+          headers: { Authorization: token },
+        })
       )?.data;
     } catch (error) {
       this.logger.error(USER_ERROR_MESSAGES.VERIFY_OTP, error);
-      error.response.data.targetLanguageCode = verifyOtpDto.targetLanguageCode;
+      error.response.data.targetLanguageCode = targetLanguageCode;
       throw error.response.data;
     }
   }
 
   async resetMpin(token: string, resetMpinDto: ResetMpinDto) {
+    let targetLanguageCode: string = this.serverDefaultLanguage;
     try {
+      const user: IUserProfile = await this.getUserService.getUserByToken(token);
+      targetLanguageCode = user.languagePreference;
       return (
         await this.httpService.axiosRef.put(this.getUrl.getUserResetMpinUrl, resetMpinDto, {
           headers: { Authorization: token },
@@ -194,6 +214,7 @@ export class UserService {
       )?.data;
     } catch (error) {
       this.logger.error(USER_ERROR_MESSAGES.UPDATER_USER_MPIN, error);
+      error.response.data.targetLanguageCode = targetLanguageCode;
       throw error?.response?.data;
     }
   }
@@ -226,6 +247,9 @@ export class UserService {
 
   // Method to create MPIN
   async createMPin(token: string, mPin: CreateMPinDto) {
+    let targetLanguageCode: string = this.serverDefaultLanguage;
+    const user: IUserProfile = await this.getUserService.getUserByToken(token);
+    targetLanguageCode = user.languagePreference;
     try {
       return (
         await this.httpService.axiosRef.post(this.getUrl.createUserMPinUrl, mPin, {
@@ -234,18 +258,23 @@ export class UserService {
       )?.data;
     } catch (error) {
       this.logger.error(USER_ERROR_MESSAGES.CREATE_USER_MPIN, error);
+      error.response.data.targetLanguageCode = targetLanguageCode;
       throw error?.response?.data;
     }
   }
 
   // Method to verify MPIN
   async verifyMPin(token: string, mPin: CreateMPinDto) {
+    let targetLanguageCode: string = this.serverDefaultLanguage;
     try {
+      const user: IUserProfile = await this.getUserService.getUserByToken(token);
+      targetLanguageCode = user.languagePreference;
       return (
         await this.httpService.axiosRef.put(this.getUrl.verifyUserMPinUrl, mPin, { headers: { Authorization: token } })
       )?.data;
     } catch (error) {
       this.logger.error(USER_ERROR_MESSAGES.VERIFY_USER_MPIN, error);
+      error.response.data.targetLanguageCode = targetLanguageCode;
       throw error?.response?.data;
     }
   }

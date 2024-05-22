@@ -56,4 +56,7 @@ export const Endpoints = {
 
   // STG Service URLs
   stgSearchUrl: '/app/v1/search',
+
+  // IL Service Urls
+  ilOnSearchUrl: '/api/v1/stg/on_search',
 };

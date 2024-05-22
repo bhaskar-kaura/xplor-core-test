@@ -23,7 +23,12 @@ export class CatchExceptionsTranslator implements ExceptionFilter {
       exception.message = translatedMessage;
     }
 
-    const status = exception && exception.statusCode ? exception.statusCode : exception.response && exception.response.statusCode ? exception.response.statusCode: HttpStatus.INTERNAL_SERVER_ERROR;
+    const status =
+      exception && exception.statusCode
+        ? exception.statusCode
+        : exception.response && exception.response.statusCode
+        ? exception.response.statusCode
+        : HttpStatus.INTERNAL_SERVER_ERROR;
 
     response.status(status).json(exception.response ? exception.response : exception);
   }
