@@ -18,6 +18,7 @@ services:
       - OPEN_STREET_URL=${OPEN_STREET_URL}
       - LANGUAGE_SERVICE_URL=${LANGUAGE_SERVICE_URL}
       - DEFAULT_LANGUAGE=${DEFAULT_LANGUAGE}
+      - IL_SERVICE_URL=${IL_SERVICE_URL}
     ports:
       - 1067:${PORT} # Maps the container port to the host port
     networks:

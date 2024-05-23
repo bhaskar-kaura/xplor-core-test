@@ -23,7 +23,7 @@ import { GetDeviceService } from '../../common/utils/getDevice/get-device';
 import { DeviceIdDto } from '../../common/utils/dto/device-dto';
 import { KeysForTitleAndDes } from '../../common/constants/keys-to-translate/translate';
 import { GetUserService } from '../../common/utils/getUser/get-user';
-import { IUserProfile } from 'Core-nest-backend/src/common/interfaces';
+import { IUserProfile } from '../../common/interfaces';
 // import { filterArrayOfObjects } from '../../common/utils/filter-array/filter-array';
 // import { DOMAINS } from '../../common/constants/domains/domains';
 // import { CATEGORIES } from '../../common/constants/categories/categories';
