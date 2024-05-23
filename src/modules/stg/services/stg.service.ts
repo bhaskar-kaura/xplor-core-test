@@ -29,7 +29,7 @@ export class StgService {
     try {
       this.deviceIdMapper.set(searchRequestDto?.context?.transaction_id, searchRequestDto.deviceId);
 
-      const searchResponse = (await this.httpService.axiosRef.post(this.getUrl.getStgSearchUrl, SearchRequestDto))
+      const searchResponse = (await this.httpService.axiosRef.post(this.getUrl.getStgSearchUrl, searchRequestDto))
         ?.data;
       console.log(searchResponse);
       return searchResponse;
@@ -40,6 +40,7 @@ export class StgService {
 
   async select(selectRequestDto: SelectRequestDto) {
     try {
+      console.log('select', selectRequestDto);
       const selectResponse = (await this.httpService.axiosRef.post(this.getUrl.getStgSelectUrl, selectRequestDto))
         ?.data;
       return selectResponse;
@@ -70,7 +71,7 @@ export class StgService {
   async onSearch(
     searchRequestDto: any,
     connectedClients: Map<string, any>,
-    sendDataToClients: (transactionId: string, data: any, connectedClients: Map<string, any>) => void,
+    sendDataToClients: (transaction_id: string, data: any, connectedClients: Map<string, any>) => void,
   ) {
     try {
       console.log('onSearchService11', this.getUrl.getIlOnSearchUrl);
