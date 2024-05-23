@@ -183,10 +183,12 @@ export class UserService {
       if (verifyOtpDto.deviceId) {
         const deviceInfo = await this.getDeviceService.getDevicePreferenceById(verifyOtpDto.deviceId);
         targetLanguageCode = deviceInfo?.languageCode || this.serverDefaultLanguage;
-      } else {
+      } else if (queryOtpTypeDto.otpType) {
         const user: IUserProfile = await this.getUserService.getUserByToken(token);
 
         targetLanguageCode = user.languagePreference;
+      } else {
+        targetLanguageCode = this.serverDefaultLanguage;
       }
 
       return (

@@ -75,7 +75,7 @@ export class StgService {
       console.log('onSearchService11', this.getUrl.getIlOnSearchUrl);
       const deviceId = this.deviceIdMapper.get(searchRequestDto?.context?.transaction_id);
       const deviceInfo = await this.getDeviceService.getDevicePreferenceById(deviceId);
-      console.log('onSearchService22',deviceInfo);
+      console.log('onSearchService22', deviceInfo);
       const targetLanguageCode = deviceInfo?.languageCode || this.serverDefaultLanguage;
       // Send this response in SSE/Socket to the mobile app
       await this.translation.translateItemPayload(searchRequestDto?.data, targetLanguageCode);
