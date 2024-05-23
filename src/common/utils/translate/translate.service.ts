@@ -33,6 +33,7 @@ export class TranslateService {
     try {
       return await Promise.all(
         data.map(async (value: any) => {
+          console.log('value', value);
           const clonedValue = JSON.parse(JSON.stringify(value));
           const keysToTranslate: any = extractKeys(clonedValue, keys);
           const response = await this.translateLanguage({

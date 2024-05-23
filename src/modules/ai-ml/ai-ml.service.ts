@@ -187,6 +187,7 @@ export class AiMlService {
 
   // Endpoint to get focus
   async getDomains(deviceIdDto: DeviceIdDto) {
+    console.log('deviceIdDto', deviceIdDto);
     try {
       const deviceInfo = await this.getDeviceService.getDevicePreferenceById(deviceIdDto.deviceId);
       const targetLanguageCode = deviceInfo?.languageCode || this.serverDefaultLanguage;
@@ -195,13 +196,14 @@ export class AiMlService {
         KeysForGetDomain,
         targetLanguageCode,
       );
-
+      console.log('translatedResponse', translatedResponse);
       return {
         success: true,
         message: CustomMessage.OK,
         data: translatedResponse,
       };
     } catch (error) {
+      console.log('error', error);
       throw error?.response?.data;
     }
   }
