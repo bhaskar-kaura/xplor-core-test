@@ -41,6 +41,8 @@ export class TranslateService {
             from_ln: this.serverDefaultLanguage,
             text: keysToTranslate,
           });
+          console.log('response', response);
+          console.log('Object.assign(clonedValue, response)', JSON.stringify(Object.assign(clonedValue, response)));
           return Object.assign(clonedValue, response);
         }),
       );
