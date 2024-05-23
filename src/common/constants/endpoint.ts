@@ -66,4 +66,8 @@ export const Endpoints = {
   stgStatusUrl: '/app/v1/status',
   // IL Service Urls
   ilOnSearchUrl: '/api/v1/stg/on_search',
+  ilOnSelectUrl: '/api/v1/stg/on_select',
+  ilOnInitUrl: '/api/v1/stg/on_init',
+  ilOnConfirmUrl: '/api/v1/stg/on_confirm',
+  ilOnStatusUrl: '/api/v1/stg/on_status',
 };

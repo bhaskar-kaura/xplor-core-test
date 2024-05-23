@@ -27,10 +27,11 @@ export class StgService {
 
   async search(searchRequestDto: SearchRequestDto) {
     try {
-      const searchRequest = searchRequestMapper(searchRequestDto);
       this.deviceIdMapper.set(searchRequestDto?.context?.transaction_id, searchRequestDto.deviceId);
 
-      const searchResponse = (await this.httpService.axiosRef.post(this.getUrl.getStgSearchUrl, searchRequest))?.data;
+      const searchResponse = (await this.httpService.axiosRef.post(this.getUrl.getStgSearchUrl, SearchRequestDto))
+        ?.data;
+      console.log(searchResponse);
       return searchResponse;
     } catch (error) {
       throw error?.response?.data;
@@ -80,36 +81,46 @@ export class StgService {
       // Send this response in SSE/Socket to the mobile app
       await this.translation.translateItemPayload(searchRequestDto?.data, targetLanguageCode);
       sendDataToClients(searchRequestDto?.context?.transaction_id, searchRequestDto?.data, connectedClients);
-      await this.httpService.axiosRef.post(this.getUrl.getIlOnSearchUrl, searchRequestDto);
+      const onsearchResponse = await this.httpService.axiosRef.post(this.getUrl.getIlOnSearchUrl, searchRequestDto);
+      console.log('onsearchResponse', onsearchResponse);
       // console.log('translatedData', JSON.stringify(translatedData))
       return searchRequestDto;
     } catch (error) {
+      console.log('error', error);
       throw error?.response?.data;
     }
   }
 
-  async onSelect(selectResponseDto: SelectRequestDto) {
+  async onSelect(selectResponseDto: any) {
     try {
-      const selectResponse = (await this.httpService.axiosRef.post(this.getUrl.getStgSelectUrl, selectResponseDto))
-        ?.data;
+      const selectResponse = await this.httpService.axiosRef.post(this.getUrl.getIlOnSelectUrl, selectResponseDto);
       return selectResponse;
     } catch (error) {
       throw error?.response?.data;
     }
   }
 
-  async onInit(initRequestDto: InitRequestDto) {
+  async onInit(initRequestDto: any) {
     try {
-      const initResponse = (await this.httpService.axiosRef.post(this.getUrl.getStgInitUrl, initRequestDto))?.data;
+      const initResponse = (await this.httpService.axiosRef.post(this.getUrl.getIlOnInitUrl, initRequestDto))?.data;
       return initResponse;
     } catch (error) {
       throw error?.response?.data;
     }
   }
 
-  async onConfirm(confirmRequestDto: ConfirmRequestDto) {
+  async onConfirm(confirmRequestDto: any) {
     try {
-      const initResponse = (await this.httpService.axiosRef.post(this.getUrl.getStgConfirmUrl, confirmRequestDto))
+      const initResponse = (await this.httpService.axiosRef.post(this.getUrl.getIlOnConfirmUrl, confirmRequestDto))
+        ?.data;
+      return initResponse;
+    } catch (error) {
+      throw error?.response?.data;
+    }
+  }
+  async onStatus(confirmRequestDto: any) {
+    try {
+      const initResponse = (await this.httpService.axiosRef.post(this.getUrl.getIlOnStatusUrl, confirmRequestDto))
         ?.data;
       return initResponse;
     } catch (error) {

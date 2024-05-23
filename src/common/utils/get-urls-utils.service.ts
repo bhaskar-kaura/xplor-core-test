@@ -148,4 +148,16 @@ export class GetUrl extends ConfigService {
   getDevicePreferenceUrl = this.userServiceUrl + Endpoints.deviceLanguagePreference;
   // URL to implementation layer on_search endpoint.
   getIlOnSearchUrl = this.ilServiceUrl + Endpoints.ilOnSearchUrl;
+
+  // Constructing the URL for selecting options in the IL service.
+  getIlOnSelectUrl = this.ilServiceUrl + Endpoints.ilOnSelectUrl;
+
+  // Constructing the URL for initializing processes in the IL service.
+  getIlOnInitUrl = this.ilServiceUrl + Endpoints.ilOnInitUrl;
+
+  // Constructing the URL for confirming actions in the IL service.
+  getIlOnConfirmUrl = this.ilServiceUrl + Endpoints.ilOnConfirmUrl;
+
+  // Constructing the URL for checking the status of operations in the IL service.
+  getIlOnStatusUrl = this.ilServiceUrl + Endpoints.ilOnStatusUrl;
 }
