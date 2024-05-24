@@ -7,6 +7,7 @@ import { SseConnectedMessage } from '../../common/constants/response-message';
 import { SelectRequestDto } from './dto/select-request.dto';
 import { InitRequestDto } from './dto/init-request.dto';
 import { ConfirmRequestDto } from './dto/confirm-request.dto';
+import { StatusRequestDto } from './dto/status-request.dto';
 
 @Controller('stg')
 @Injectable()
@@ -32,6 +33,7 @@ export class StgController {
     return this.stgService.select(selectRequestDto);
   }
 
+  @Public()
   @Post('init')
   init(@Body() initRequestDto: InitRequestDto) {
     return this.stgService.init(initRequestDto);
@@ -43,11 +45,12 @@ export class StgController {
     return this.stgService.confirm(confirmRequestDto);
   }
 
-  // @Public()
-  // @Post('status')
-  // status(@Body() statusRequestDto: StatusRequestDto) {
-  //   return this.stgService.status(statusRequestDto);
-  // }
+  @Public()
+  @Post('status')
+  status(@Body() statusRequestDto: StatusRequestDto) {
+    console.log('status', statusRequestDto);
+    return this.stgService.status(statusRequestDto);
+  }
 
   @Public()
   @Post('on_search')

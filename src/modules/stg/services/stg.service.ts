@@ -9,6 +9,7 @@ import { SelectRequestDto } from '../dto/select-request.dto';
 import { InitRequestDto } from '../dto/init-request.dto';
 import { ConfirmRequestDto } from '../dto/confirm-request.dto';
 import { AxiosService } from '../../../common/axios/axios.service';
+import { StatusRequestDto } from '../dto/status-request.dto';
 
 @Injectable()
 export class StgService {
@@ -48,6 +49,7 @@ export class StgService {
 
   async init(initRequestDto: InitRequestDto) {
     try {
+      console.log('initRequestDto', initRequestDto);
       const initResponse = (await this.httpService.post(this.getUrl.getStgInitUrl, initRequestDto))?.data;
       return initResponse;
     } catch (error) {
@@ -58,6 +60,15 @@ export class StgService {
   async confirm(confirmRequestDto: ConfirmRequestDto) {
     try {
       const initResponse = (await this.httpService.post(this.getUrl.getStgConfirmUrl, confirmRequestDto))?.data;
+      return initResponse;
+    } catch (error) {
+      throw error?.response?.data;
+    }
+  }
+
+  async status(statusRequestDto: StatusRequestDto) {
+    try {
+      const initResponse = (await this.httpService.post(this.getUrl.getStgStatusUrl, statusRequestDto))?.data;
       return initResponse;
     } catch (error) {
       throw error?.response?.data;
@@ -99,7 +110,9 @@ export class StgService {
 
   async onInit(initRequestDto: any) {
     try {
-      const initResponse = (await this.httpService.post(this.getUrl.getIlOnInitUrl, initRequestDto))?.data;
+      console.log('oninit recieved', initRequestDto);
+      const initResponse = await this.httpService.post(this.getUrl.getIlOnInitUrl, initRequestDto);
+      console.log('onInitResponse', initResponse);
       return initResponse;
     } catch (error) {
       throw error?.response?.data;
