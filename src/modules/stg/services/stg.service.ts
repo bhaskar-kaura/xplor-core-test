@@ -9,13 +9,14 @@ import { ConfigService } from '@nestjs/config';
 import { SelectRequestDto } from '../dto/select-request.dto';
 import { InitRequestDto } from '../dto/init-request.dto';
 import { ConfirmRequestDto } from '../dto/confirm-request.dto';
+import { AxiosService } from 'Core-nest-backend/src/common/axios/axios.service';
 
 @Injectable()
 export class StgService {
   private deviceIdMapper: Map<string, any> = new Map();
   private serverDefaultLanguage: string;
   constructor(
-    private readonly httpService: HttpService,
+    private readonly httpService: AxiosService,
     private readonly getUrl: GetUrl,
     private readonly translation: TranslateService,
     private readonly configService: ConfigService,
@@ -29,8 +30,7 @@ export class StgService {
     try {
       this.deviceIdMapper.set(searchRequestDto?.context?.transaction_id, searchRequestDto.deviceId);
 
-      const searchResponse = (await this.httpService.axiosRef.post(this.getUrl.getStgSearchUrl, searchRequestDto))
-        ?.data;
+      const searchResponse = (await this.httpService.post(this.getUrl.getStgSearchUrl, searchRequestDto))?.data;
       console.log(searchResponse);
       return searchResponse;
     } catch (error) {
@@ -40,18 +40,17 @@ export class StgService {
 
   async select(selectRequestDto: SelectRequestDto) {
     try {
-      console.log('select', selectRequestDto);
-      const selectResponse = (await this.httpService.axiosRef.post(this.getUrl.getStgSelectUrl, selectRequestDto))
-        ?.data;
+      const selectResponse = await this.httpService.post(this.getUrl.getStgSelectUrl, selectRequestDto);
+      console.log('selectResponse', selectResponse);
       return selectResponse;
     } catch (error) {
-      throw error?.response?.data;
+      throw error?.response;
     }
   }
 
   async init(initRequestDto: InitRequestDto) {
     try {
-      const initResponse = (await this.httpService.axiosRef.post(this.getUrl.getStgInitUrl, initRequestDto))?.data;
+      const initResponse = (await this.httpService.post(this.getUrl.getStgInitUrl, initRequestDto))?.data;
       return initResponse;
     } catch (error) {
       throw error?.response?.data;
@@ -60,8 +59,7 @@ export class StgService {
 
   async confirm(confirmRequestDto: ConfirmRequestDto) {
     try {
-      const initResponse = (await this.httpService.axiosRef.post(this.getUrl.getStgConfirmUrl, confirmRequestDto))
-        ?.data;
+      const initResponse = (await this.httpService.post(this.getUrl.getStgConfirmUrl, confirmRequestDto))?.data;
       return initResponse;
     } catch (error) {
       throw error?.response?.data;
@@ -82,7 +80,7 @@ export class StgService {
       // Send this response in SSE/Socket to the mobile app
       await this.translation.translateItemPayload(searchRequestDto?.data, targetLanguageCode);
       sendDataToClients(searchRequestDto?.context?.transaction_id, searchRequestDto?.data, connectedClients);
-      const onsearchResponse = await this.httpService.axiosRef.post(this.getUrl.getIlOnSearchUrl, searchRequestDto);
+      const onsearchResponse = await this.httpService.post(this.getUrl.getIlOnSearchUrl, searchRequestDto);
       console.log('onsearchResponse', onsearchResponse);
       // console.log('translatedData', JSON.stringify(translatedData))
       return searchRequestDto;
@@ -94,7 +92,7 @@ export class StgService {
 
   async onSelect(selectResponseDto: any) {
     try {
-      const selectResponse = await this.httpService.axiosRef.post(this.getUrl.getIlOnSelectUrl, selectResponseDto);
+      const selectResponse = await this.httpService.post(this.getUrl.getIlOnSelectUrl, selectResponseDto);
       return selectResponse;
     } catch (error) {
       throw error?.response?.data;
@@ -103,7 +101,7 @@ export class StgService {
 
   async onInit(initRequestDto: any) {
     try {
-      const initResponse = (await this.httpService.axiosRef.post(this.getUrl.getIlOnInitUrl, initRequestDto))?.data;
+      const initResponse = (await this.httpService.post(this.getUrl.getIlOnInitUrl, initRequestDto))?.data;
       return initResponse;
     } catch (error) {
       throw error?.response?.data;
@@ -112,8 +110,7 @@ export class StgService {
 
   async onConfirm(confirmRequestDto: any) {
     try {
-      const initResponse = (await this.httpService.axiosRef.post(this.getUrl.getIlOnConfirmUrl, confirmRequestDto))
-        ?.data;
+      const initResponse = (await this.httpService.post(this.getUrl.getIlOnConfirmUrl, confirmRequestDto))?.data;
       return initResponse;
     } catch (error) {
       throw error?.response?.data;
@@ -121,8 +118,7 @@ export class StgService {
   }
   async onStatus(confirmRequestDto: any) {
     try {
-      const initResponse = (await this.httpService.axiosRef.post(this.getUrl.getIlOnStatusUrl, confirmRequestDto))
-        ?.data;
+      const initResponse = (await this.httpService.post(this.getUrl.getIlOnStatusUrl, confirmRequestDto))?.data;
       return initResponse;
     } catch (error) {
       throw error?.response?.data;

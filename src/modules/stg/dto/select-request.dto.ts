@@ -11,7 +11,6 @@ class OrderItem {
   provider_id: string;
 
   @IsOptional()
-  @IsNotEmpty()
   @IsArray()
   fulfillment_id?: string[];
 }

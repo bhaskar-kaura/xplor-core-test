@@ -10,6 +10,7 @@ import { UserModule } from '../modules/user/user.module';
 import { GetAddressService } from './utils/get-address.service';
 import { SanitizeService } from './utils';
 import { TranslateService } from './utils/translate/translate.service';
+import { AxiosService } from './axios/axios.service';
 
 // Decorate the class with @Global() to make it a global module.
 @Global()
@@ -17,9 +18,9 @@ import { TranslateService } from './utils/translate/translate.service';
   // Import the UserModule to include user-related functionalities.
   imports: [UserModule],
   // Provide the GetUrl and TokenGuard services.
-  providers: [GetUrl, TokenGuard, GetAddressService, SanitizeService, TranslateService],
+  providers: [GetUrl, TokenGuard, GetAddressService, SanitizeService, TranslateService, AxiosService],
   // Export the GetUrl and TokenGuard services to make them available for injection in other modules.
-  exports: [GetUrl, TokenGuard, GetAddressService, SanitizeService, TranslateService],
+  exports: [GetUrl, TokenGuard, GetAddressService, SanitizeService, TranslateService, AxiosService],
 })
 // Define the CommonModule class.
 export class CommonModule {}
