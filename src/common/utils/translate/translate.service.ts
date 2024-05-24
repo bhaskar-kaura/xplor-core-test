@@ -34,7 +34,7 @@ export class TranslateService {
     try {
       return await Promise.all(
         data.map(async (value: any) => {
-          console.log('value', value);
+          // console.log('value', value);
           const clonedValue = JSON.parse(JSON.stringify(value));
           const keysToTranslate: any = extractKeys(clonedValue, keys);
           const response = await this.translateLanguage({
@@ -42,7 +42,7 @@ export class TranslateService {
             from_ln: this.serverDefaultLanguage,
             text: keysToTranslate,
           });
-          console.log('response', response);
+          console.log('translateLanguage response', response);
           console.log('Object.assign(clonedValue, response)', JSON.stringify(Object.assign(clonedValue, response)));
           return Object.assign(clonedValue, response);
         }),
@@ -56,7 +56,7 @@ export class TranslateService {
   async translateItemPayload(data: any, targetLanguageCode: string) {
     try {
       // eslint-disable-next-line no-console
-      console.log(data);
+      // console.log(data);
       if (data?.course.message) {
         if (data?.course?.message?.catalog?.providers) {
           const providersArray = data?.course?.message?.catalog?.providers;

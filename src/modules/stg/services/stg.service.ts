@@ -89,8 +89,8 @@ export class StgService {
       // Send this response in SSE/Socket to the mobile app
       await this.translation.translateItemPayload(searchRequestDto?.data, targetLanguageCode);
       sendDataToClients(searchRequestDto?.context?.transaction_id, searchRequestDto?.data, connectedClients);
-      const onsearchResponse = await this.httpService.post(this.getUrl.getIlOnSearchUrl, searchRequestDto);
-      console.log('onsearchResponse', onsearchResponse);
+      await this.httpService.post(this.getUrl.getIlOnSearchUrl, searchRequestDto);
+      // console.log('onsearchResponse', onsearchResponse);
       console.log('searchRequestDto==========', JSON.stringify(searchRequestDto));
       return searchRequestDto;
     } catch (error) {
