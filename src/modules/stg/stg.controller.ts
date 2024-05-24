@@ -56,18 +56,21 @@ export class StgController {
     return this.stgService.onSearch(searchResponse, this.connectedClients, this.sendDataToClients);
   }
 
+  @Public()
   @Post('on_select')
   onSelect(@Body() searchResponse: any) {
     // Bind the context of sendDataToClients to this instance
     return this.stgService.onSelect(searchResponse);
   }
 
+  @Public()
   @Post('on_init')
   onInit(@Body() searchResponse: any) {
     // Bind the context of sendDataToClients to this instance
     return this.stgService.onInit(searchResponse);
   }
 
+  @Public()
   @Post('on_confirm')
   onConfirm(@Body() searchResponse: any) {
     // Bind the context of sendDataToClients to this instance
