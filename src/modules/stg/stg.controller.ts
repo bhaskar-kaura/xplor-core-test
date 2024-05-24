@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { StgService } from './services/stg.service';
 import { SearchRequestDto } from './dto/search-request.dto';
 import { Body, Controller, Get, Injectable, Post, Req, Res } from '@nestjs/common';

@@ -1,15 +1,14 @@
+/* eslint-disable no-console */
 import { Injectable } from '@nestjs/common';
 import { SearchRequestDto } from '../dto/search-request.dto';
-import { HttpService } from '@nestjs/axios';
 import { GetUrl } from '../../../common/utils';
-import { searchRequestMapper } from '../../../common/utils/search-request-builder.utils';
 import { TranslateService } from '../../../common/utils/translate/translate.service';
 import { GetDeviceService } from '../../../common/utils/getDevice/get-device';
 import { ConfigService } from '@nestjs/config';
 import { SelectRequestDto } from '../dto/select-request.dto';
 import { InitRequestDto } from '../dto/init-request.dto';
 import { ConfirmRequestDto } from '../dto/confirm-request.dto';
-import { AxiosService } from 'Core-nest-backend/src/common/axios/axios.service';
+import { AxiosService } from '../../../common/axios/axios.service';
 
 @Injectable()
 export class StgService {
