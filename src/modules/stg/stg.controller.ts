@@ -27,6 +27,7 @@ export class StgController {
   @Public()
   @Post('select')
   select(@Body() selectRequestDto: SelectRequestDto) {
+    console.log('select', selectRequestDto);
     return this.stgService.select(selectRequestDto);
   }
 
@@ -83,11 +84,11 @@ export class StgController {
     res.setHeader('Access-Control-Allow-Origin', '*');
     req.setTimeout(0);
     // Extract transaction ID from query parameters
-    const transactionId: string = req.query.transaction_id;
+    const transaction_id: string = req.query.transaction_id;
     // Add the client to the clientsMap
-    this.connectedClients.set(transactionId, res);
+    this.connectedClients.set(transaction_id, res);
     this.sendDataToClients(
-      transactionId,
+      transaction_id,
       {
         success: true,
         message: SseConnectedMessage,
@@ -96,18 +97,18 @@ export class StgController {
     );
     // Handle client disconnect
     req.on('close', () => {
-      this.connectedClients.delete(transactionId); // Remove the disconnected client
+      this.connectedClients.delete(transaction_id); // Remove the disconnected client
     });
   }
 
-  async sendDataToClients(transactionId: string, data: any, connectedClients: Map<string, any>): Promise<void> {
+  async sendDataToClients(transaction_id: string, data: any, connectedClients: Map<string, any>): Promise<void> {
     try {
-      console.log('SSEDatareceived', transactionId);
+      console.log('SSEDatareceived', transaction_id);
       console.log('connectedClients', connectedClients);
-      if (connectedClients.has(transactionId)) {
+      if (connectedClients.has(transaction_id)) {
         // eslint-disable-next-line no-console
         console.log('sseData', `data: ${JSON.stringify(data)}`);
-        connectedClients.get(transactionId).write(`data: ${JSON.stringify(data)}\n\n`);
+        connectedClients.get(transaction_id).write(`data: ${JSON.stringify(data)}\n\n`);
       }
 
       return data;

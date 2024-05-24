@@ -1,18 +1,18 @@
-import { IsArray, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class OrderItem {
   @IsArray()
-  @IsString({ each: true })
-  itemsId: string[];
+  @IsNotEmpty()
+  items_id: string[];
 
   @IsString()
-  providerId: string;
+  @IsNotEmpty()
+  provider_id: string;
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  fulfillmentId?: string[];
+  fulfillment_id?: string[];
 }
 
 class Message {
@@ -23,13 +23,16 @@ class Message {
 
 class Context {
   @IsString()
-  transactionId: string;
+  @IsNotEmpty()
+  transaction_id: string;
 
   @IsString()
+  @IsNotEmpty()
   domain: string;
 
   @IsString()
-  messageId: string;
+  @IsNotEmpty()
+  message_id: string;
 
   @IsOptional()
   ttl: string;
