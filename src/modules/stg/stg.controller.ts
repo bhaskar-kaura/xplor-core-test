@@ -3,6 +3,9 @@ import { SearchRequestDto } from './dto/search-request.dto';
 import { Body, Controller, Get, Injectable, Post, Req, Res } from '@nestjs/common';
 import { Public } from '../../common/decorators/public.decorators';
 import { SseConnectedMessage } from '../../common/constants/response-message';
+import { SelectRequestDto } from './dto/select-request.dto';
+import { InitRequestDto } from './dto/init-request.dto';
+import { ConfirmRequestDto } from './dto/confirm-request.dto';
 
 @Controller('stg')
 @Injectable()
@@ -22,11 +25,52 @@ export class StgController {
   }
 
   @Public()
+  @Post('select')
+  select(@Body() selectRequestDto: SelectRequestDto) {
+    return this.stgService.select(selectRequestDto);
+  }
+
+  @Post('init')
+  init(@Body() initRequestDto: InitRequestDto) {
+    return this.stgService.init(initRequestDto);
+  }
+
+  @Public()
+  @Post('confirm')
+  confirm(@Body() confirmRequestDto: ConfirmRequestDto) {
+    return this.stgService.confirm(confirmRequestDto);
+  }
+
+  // @Public()
+  // @Post('status')
+  // status(@Body() statusRequestDto: StatusRequestDto) {
+  //   return this.stgService.status(statusRequestDto);
+  // }
+
+  @Public()
   @Post('on_search')
   onSearch(@Body() searchResponse: any) {
     // Bind the context of sendDataToClients to this instance
     console.log('OnSearch00', searchResponse);
     return this.stgService.onSearch(searchResponse, this.connectedClients, this.sendDataToClients);
+  }
+
+  @Post('on_select')
+  onSelect(@Body() searchResponse: any) {
+    // Bind the context of sendDataToClients to this instance
+    return this.stgService.onSelect(searchResponse);
+  }
+
+  @Post('on_init')
+  onInit(@Body() searchResponse: any) {
+    // Bind the context of sendDataToClients to this instance
+    return this.stgService.onInit(searchResponse);
+  }
+
+  @Post('on_confirm')
+  onConfirm(@Body() searchResponse: any) {
+    // Bind the context of sendDataToClients to this instance
+    return this.stgService.onConfirm(searchResponse);
   }
 
   @Public()
