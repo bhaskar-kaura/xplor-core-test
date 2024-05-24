@@ -29,8 +29,7 @@ export class StgService {
     try {
       this.deviceIdMapper.set(searchRequestDto?.context?.transaction_id, searchRequestDto.deviceId);
 
-      const searchResponse = (await this.httpService.post(this.getUrl.getStgSearchUrl, searchRequestDto))?.data;
-      console.log(searchResponse);
+      const searchResponse = await this.httpService.post(this.getUrl.getStgSearchUrl, searchRequestDto);
       return searchResponse;
     } catch (error) {
       throw error?.response?.data;
@@ -81,7 +80,7 @@ export class StgService {
       sendDataToClients(searchRequestDto?.context?.transaction_id, searchRequestDto?.data, connectedClients);
       const onsearchResponse = await this.httpService.post(this.getUrl.getIlOnSearchUrl, searchRequestDto);
       console.log('onsearchResponse', onsearchResponse);
-      // console.log('translatedData', JSON.stringify(translatedData))
+      console.log('searchRequestDto==========', JSON.stringify(searchRequestDto));
       return searchRequestDto;
     } catch (error) {
       console.log('error', error);
