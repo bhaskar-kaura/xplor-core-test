@@ -129,10 +129,35 @@ export class GetUrl extends ConfigService {
   getLanguagesForCountryAndStateUrl = this.llmServiceUrl + Endpoints.getLanguagesForCountryAndStateUrl;
   updateUserLanguagePreferenceUrl = this.userServiceUrl + Endpoints.updateUserLanguagePreferenceUrl;
 
+  // Constructing the URL for searching in the STG service.
   getStgSearchUrl = this.stgServiceUrl + Endpoints.stgSearchUrl;
+
+  // Constructing the URL for selecting options in the STG service.
+  getStgSelectUrl = this.stgServiceUrl + Endpoints.stgSelectUrl;
+
+  // Constructing the URL for confirming actions in the STG service.
+  getStgConfirmUrl = this.stgServiceUrl + Endpoints.stgConfirmUrl;
+
+  // Constructing the URL for checking the status of operations in the STG service.
+  getStgStatusUrl = this.stgServiceUrl + Endpoints.stgStatusUrl;
+
+  // Constructing the URL for initializing processes in the STG service.
+  getStgInitUrl = this.stgServiceUrl + Endpoints.stgInitUrl;
 
   // URL to device language preference api in user service
   getDevicePreferenceUrl = this.userServiceUrl + Endpoints.deviceLanguagePreference;
   // URL to implementation layer on_search endpoint.
   getIlOnSearchUrl = this.ilServiceUrl + Endpoints.ilOnSearchUrl;
+
+  // Constructing the URL for selecting options in the IL service.
+  getIlOnSelectUrl = this.ilServiceUrl + Endpoints.ilOnSelectUrl;
+
+  // Constructing the URL for initializing processes in the IL service.
+  getIlOnInitUrl = this.ilServiceUrl + Endpoints.ilOnInitUrl;
+
+  // Constructing the URL for confirming actions in the IL service.
+  getIlOnConfirmUrl = this.ilServiceUrl + Endpoints.ilOnConfirmUrl;
+
+  // Constructing the URL for checking the status of operations in the IL service.
+  getIlOnStatusUrl = this.ilServiceUrl + Endpoints.ilOnStatusUrl;
 }

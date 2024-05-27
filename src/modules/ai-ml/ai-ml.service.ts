@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
@@ -17,7 +18,7 @@ import { LANGUAGES } from '../../common/constants/languages/languages';
 import { DOMAINS } from '../../common/constants/domains/domains';
 import { CATEGORIES } from '../../common/constants/categories/categories';
 import { CustomMessage } from '../../common/enums/message';
-import { OtherLanguages } from '../../common/constants/languages/other-languages-tile';
+import { OtherLanguages, StaticLanguagesList } from '../../common/constants/languages/other-languages-tile';
 import { GetDeviceService } from '../../common/utils/getDevice/get-device';
 import { DeviceIdDto } from '../../common/utils/dto/device-dto';
 import { TranslateService } from '../../common/utils/translate/translate.service';
@@ -140,11 +141,11 @@ export class AiMlService {
     if (regionLanguages.length === 0) {
       const newLanguageArray = await this.getLanguagesForCountryAndState(countryAndState);
       if (newLanguageArray) {
-        const newRegionLangauge = await this.createRegionLanguages({
+        const newRegionLanguages = await this.createRegionLanguages({
           region: sanitizeRegion,
           languages: newLanguageArray,
         });
-        languageArray = newRegionLangauge;
+        languageArray = newRegionLanguages;
       }
     }
 
@@ -175,11 +176,21 @@ export class AiMlService {
       }
     });
     const isDefaultLanguage = mixedArray.filter((lang) => lang.language === OtherLanguages.language);
+    // Concatenate mixedArray and StaticLanguagesList
+    const combinedArray = [...mixedArray, ...StaticLanguagesList];
+
+    // Filter out duplicates based on the 'language' property
+    const staticLanguages = combinedArray.filter(
+      (lang, index, self) => index === self.findIndex((t) => t.language === lang.language),
+    );
+
+    // console.log(staticLanguages);
     return {
       success: true,
       message: CustomMessage.OK,
       data: {
-        regionalLanguages: mixedArray.length !== 0 ? mixedArray : [],
+        // regionalLanguages: mixedArray.length !== 0 ? mixedArray : [],
+        regionalLanguages: staticLanguages.length !== 0 ? staticLanguages : [],
         otherLanguages: isDefaultLanguage.length !== 0 ? [] : OtherLanguages,
       },
     };
@@ -187,6 +198,7 @@ export class AiMlService {
 
   // Endpoint to get focus
   async getDomains(deviceIdDto: DeviceIdDto) {
+    console.log('deviceIdDto', deviceIdDto);
     try {
       const deviceInfo = await this.getDeviceService.getDevicePreferenceById(deviceIdDto.deviceId);
       const targetLanguageCode = deviceInfo?.languageCode || this.serverDefaultLanguage;
@@ -195,13 +207,14 @@ export class AiMlService {
         KeysForGetDomain,
         targetLanguageCode,
       );
-
+      console.log('translatedResponse', translatedResponse);
       return {
         success: true,
         message: CustomMessage.OK,
         data: translatedResponse,
       };
     } catch (error) {
+      console.log('error', error);
       throw error?.response?.data;
     }
   }
