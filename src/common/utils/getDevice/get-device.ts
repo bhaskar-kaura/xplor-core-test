@@ -1,10 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+
 import { GetUrl } from '../get-urls-utils.service';
 
 @Injectable()
 export class GetDeviceService {
-  logger: Logger;
   constructor(private readonly httpService: HttpService, private readonly getUrl: GetUrl) {}
 
   async getDevicePreferenceById(deviceId: string) {

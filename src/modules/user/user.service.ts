@@ -2,6 +2,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { faker } from '@faker-js/faker';
 import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
+
 import { PhoneNumberDto } from './dto/phone-number.dto';
 import { GetUrl } from '../../common/utils';
 import {
@@ -11,23 +13,24 @@ import {
   CreateMPinDto,
   CreateUserDto,
   QueryOtpTypeDto,
+  QueryUserProfile,
   UpdateDevicePreferenceDto,
   VerifyOtpDto,
 } from './dto';
 import { USER_ERROR_MESSAGES } from '../../common/constants/error-message';
 import { ResetMpinDto } from './dto/reset-mpin.dto';
-import { ConfigService } from '@nestjs/config';
 import { CreateWalletDto } from '../wallet/dto';
 import { TranslateService } from '../../common/utils/translate/translate.service';
 import { GetDeviceService } from '../../common/utils/getDevice/get-device';
 import { DeviceIdDto } from '../../common/utils/dto/device-dto';
-import { KeysForTitleAndDes } from '../../common/constants/keys-to-translate/translate';
+import {
+  KeysForCategories,
+  KeysForGetDomain,
+  KeysForTitleAndDes,
+  KeysForUserProfileKyc,
+} from '../../common/constants/keys-to-translate/translate';
 import { GetUserService } from '../../common/utils/getUser/get-user';
 import { IUserProfile } from '../../common/interfaces';
-// import { filterArrayOfObjects } from '../../common/utils/filter-array/filter-array';
-// import { DOMAINS } from '../../common/constants/domains/domains';
-// import { CATEGORIES } from '../../common/constants/categories/categories';
-// import { extractKeys } from '../../common/utils/extract-keys/extract-keys';
 
 // Define the UserService with necessary methods for user operations
 @Injectable()
@@ -46,16 +49,52 @@ export class UserService {
   }
 
   // Method to find a user by token
-  async findOne(token: string) {
+  async findOne(token: string, query: QueryUserProfile) {
+    let targetLanguageCode: string;
     try {
-      return (
+      const foundUser = (
         await this.httpService.axiosRef.get(this.getUrl.getUserProfileUrl, {
           headers: {
             Authorization: token,
           },
         })
       )?.data;
+      const foundUserData = foundUser?.data;
+      targetLanguageCode = foundUserData?.languagePreference || this.serverDefaultLanguage;
+      if (query.translate == 'false') {
+        return foundUser;
+      }
+
+      if (foundUserData.kyc) {
+        foundUserData.kyc.address = JSON.parse(foundUserData.kyc.address);
+
+        // const translatedResponse = await this.translateService.translateNestedArrayObjectPayload(
+        //   [foundUserData],
+        //   KeysForUserProfileKyc,
+        //   targetLanguageCode,
+        // );
+        const translatedDomains = await this.translateService.translateNestedArrayObjectPayload(
+          foundUserData.domains,
+          KeysForGetDomain,
+          targetLanguageCode,
+        );
+        Object.assign(foundUserData.domains, translatedDomains);
+        foundUserData.domains = translatedDomains;
+
+        const translatedCategories = await this.translateService.translateNestedArrayObjectPayload(
+          foundUserData.categories,
+          KeysForCategories,
+          targetLanguageCode,
+        );
+        Object.assign(foundUserData.categories, translatedCategories);
+
+        // foundUserData.kyc.address = JSON.stringify(translatedResponse[0].kyc.address);
+        // Object.assign(foundUserData, translatedResponse[0]);
+      }
+
+      return foundUser;
     } catch (error) {
+      error.response.data.targetLanguageCode = targetLanguageCode;
       this.logger.error(USER_ERROR_MESSAGES.GET_USER_DETAILS, error);
       throw error?.response?.data;
     }
@@ -148,6 +187,7 @@ export class UserService {
       const otp = (
         await this.httpService.axiosRef.post(this.getUrl.getUserSendOtpUrl, {
           phoneNumber: phoneNumber.phoneNumber.replaceAll(' ', ''),
+          userCheck: phoneNumber.userCheck,
         })
       )?.data;
       return otp;
@@ -220,16 +260,6 @@ export class UserService {
       throw error?.response?.data;
     }
   }
-  // // Method to resend OTP
-  // async resendOtp(resendOtp: ResendOtpDto) {
-  //   try {
-  //     const otp = (await this.httpService.axiosRef.post(this.getUrl.getUserResendOtpUrl, resendOtp))?.data;
-  //     return otp;
-  //   } catch (error) {
-  //     this.logger.error(USER_ERROR_MESSAGES.RESEND_OTP, error);
-  //     throw error.response.data;
-  //   }
-  // }
 
   // Method to validate token
   async validateToken(token: string) {
@@ -281,6 +311,7 @@ export class UserService {
     }
   }
 
+  // Method to getAccessToken
   async getAccessToken(token: string) {
     try {
       return (
@@ -294,6 +325,8 @@ export class UserService {
     }
   }
 
+  // Method to logoutUser
+
   async logoutUser(token: string) {
     try {
       return (
@@ -306,6 +339,7 @@ export class UserService {
         )
       )?.data;
     } catch (error) {
+      this.logger.error(error);
       throw error?.response?.data;
     }
   }
@@ -335,14 +369,13 @@ export class UserService {
       const updatedUser = (
         await this.httpService.axiosRef.patch(
           this.getUrl.getUserProfileUrl,
-          { wallet: walletId, role: roleId, kyc: user.kyc }, //need to create the inerface
+          { wallet: walletId, role: roleId, kyc: user.kyc }, //need to create the interface
           {
             headers: { Authorization: token },
           },
         )
       )?.data;
       return updatedUser;
-      // return (await this.httpService.axiosRef.post(this.getUrl.createUserUrl, user))?.data;
     } catch (error) {
       this.logger.error(USER_ERROR_MESSAGES.CREATE_USER, error);
       throw error?.response?.data;
@@ -384,28 +417,6 @@ export class UserService {
   async getDevicePreferenceById(deviceId: string) {
     try {
       const response = (await this.httpService.axiosRef.get(this.getUrl.getDevicePreferenceUrl + `/${deviceId}`))?.data;
-      // const domains = response?.data?.domains;
-      // const categories = response?.data?.categories;
-      // const filteredDomains = filterArrayOfObjects(DOMAINS, domains);
-      // const filteredCategories = filterArrayOfObjects(CATEGORIES, categories);
-      // console.log('domains', filterArrayOfObjects(DOMAINS, domains));
-      // console.log('categories', filterArrayOfObjects(CATEGORIES, categories));
-      // response.data.domains = await Promise.all(
-      //   filteredDomains.map(async (value: any) => {
-      //     const y: any = extractKeys(value, ['title']);
-      //     console.log('response.data.languageCode', response.data.languageCode);
-      //     console.log('this.serverDefaultLanguage', this.serverDefaultLanguage);
-      //     console.log('y', y);
-      //     const x = await this.translationService.translateLanguage({
-      //       to_ln: response.data.languageCode,
-      //       from_ln: this.serverDefaultLanguage,
-      //       text: y,
-      //     });
-      //     console.log('x', await x);
-      //     return x;
-      //   }),
-      // );
-      // response.data.categories = filteredCategories;
       return response;
     } catch (error) {
       this.logger.error(USER_ERROR_MESSAGES.GET_DEVICE_PREFERENCE, error);

@@ -15,6 +15,9 @@ export class PhoneNumberDto {
 
   @IsOptional()
   targetLanguageCode: string;
+
+  @IsOptional()
+  userCheck?: boolean;
 }
 
 export class OtpDto {

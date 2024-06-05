@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, NotFoundException } from '@nestjs/common';
+
 import { GetUrl } from './get-urls-utils.service';
 import { LatLongDto } from './dto/lat-long.dto';
 

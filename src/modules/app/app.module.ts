@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import * as Joi from 'joi';
 import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
+import { APP_GUARD } from '@nestjs/core';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -12,10 +13,8 @@ import envValidation from '../../config/env/validation/env.validation';
 import { CommonModule } from '../../common/common.module';
 import { WalletModule } from '../wallet/wallet.module';
 import { GetUrl } from '../../common/utils/get-urls-utils.service';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TokenGuard } from '../../common/guard/token.guard';
 import { AiMlModule } from '../ai-ml/ai-ml.module';
-import { LoggingInterceptor } from '../../common/utils/logger-interceptor';
 import { StgModule } from '../stg/stg.module';
 
 /**
@@ -47,10 +46,6 @@ import { StgModule } from '../stg/stg.module';
     {
       provide: APP_GUARD,
       useClass: TokenGuard,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: LoggingInterceptor,
     },
   ],
 })

@@ -1,6 +1,22 @@
 export const KeysForGetDomain = ['title', 'description'];
 export const KeysForCategories = ['title'];
 export const KeysForTitleAndDes = ['title', 'description'];
+export const KeysForUserProfileKyc = [
+  'role.title',
+  'role.description',
+  'kyc.firstName',
+  'kyc.lastName',
+  'kyc.address.careOf',
+  'kyc.address.district',
+  'kyc.address.houseNumber',
+  'kyc.address.landmark',
+  'kyc.address.locality',
+  'kyc.address.postOffice',
+  'kyc.address.state',
+  'kyc.address.street',
+  'kyc.address.subDistrict',
+];
+export const KeysForUserProfileRole = ['role.title', 'role.description'];
 export const KeysFromItems = [
   'descriptor.name',
   'descriptor.short_desc',

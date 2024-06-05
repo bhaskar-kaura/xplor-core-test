@@ -6,8 +6,7 @@ class OrderItem {
   @IsNotEmpty()
   items_id: string[];
 
-  @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   provider_id: string;
 
   @IsOptional()

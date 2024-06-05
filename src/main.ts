@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import { HttpService } from '@nestjs/axios';
 import helmet from 'helmet';
+import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 // import { CustomValidationPipe } from './common/validation/custom.validation';
 // import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
-import { HttpService } from '@nestjs/axios';
-import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './modules/app/app.module';
 import { CatchExceptionsTranslator } from './common/exception-filter/catch-block-exception';
 import { TranslateService } from './common/utils/translate/translate.service';

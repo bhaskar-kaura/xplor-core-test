@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { JwtService } from '@nestjs/jwt';
@@ -93,20 +92,28 @@ export class EAuthService {
 
       // Retrieve the organization configuration
       const organization = this.configService.get('organization');
-
-      // Create a new wallet for the user
-      const createdWalletData = (
-        await this.httpService.axiosRef.post(this.getUrl.getWalletUrl, {
-          userId: userId,
-          fullName: userDetails?.given_name || '',
-          email: userDetails?.email || '',
-          organization: organization,
+      const foundUser = (
+        await this.httpService.axiosRef(this.getUrl.getUserProfileUrl, {
+          headers: { Authorization: `Bearer ${token}` },
         })
-      )?.data;
-      this.logger.debug('createdWalletData', JSON.stringify(createdWalletData));
+      )?.data?.data;
+      this.logger.debug('foundUser=======', foundUser);
+      // Create a new wallet for the user
+      let createdWalletData: any;
+      if (foundUser.wallet === null) {
+        createdWalletData = (
+          await this.httpService.axiosRef.post(this.getUrl.getWalletUrl, {
+            userId: userId,
+            fullName: userDetails?.given_name || '',
+            email: userDetails?.email || '',
+            organization: organization,
+          })
+        )?.data;
+        this.logger.debug('createdWalletData', JSON.stringify(createdWalletData));
+      }
 
       // Extract the wallet ID from the created wallet data
-      const walletId = createdWalletData?.data?._id;
+      const walletId = createdWalletData?.data?._id || foundUser?.wallet;
 
       // Split the given name into first and last names
       const userName = userDetails.given_name?.split(' ');
@@ -117,6 +124,7 @@ export class EAuthService {
         email: userDetails.email || '',
         address: JSON.stringify(userDetails.address) || '', // Using address if available, otherwise an empty string
         gender: userDetails.gender || '', // Using gender if available, otherwise an empty string
+        dob: userDetails.birthdate || '',
         provider: {
           id: userDetails.user_sso_id, // Using user_sso_id as the provider id
           name: PROVIDERS.DIGILOCKER, // Placeholder for provider name, as it's not present in IBasicUserDetails

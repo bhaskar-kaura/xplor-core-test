@@ -159,7 +159,7 @@ class OrderItem {
 
   @ValidateNested()
   @Type(() => FulfillmentsDto)
-  fulfillments: FulfillmentsDto;
+  fulfillment: FulfillmentsDto;
 
   @IsArray()
   @IsString({ each: true })

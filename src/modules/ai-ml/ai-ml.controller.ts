@@ -1,4 +1,5 @@
 import { Controller, Get, Body, Post, Query, Delete } from '@nestjs/common';
+
 import { AiMlService } from './ai-ml.service';
 import { CreateGuestLanguageDto, QueryDeviceIdDto, TranslateDto } from './dto';
 import { Public } from '../../common/decorators/public.decorators';
@@ -37,6 +38,7 @@ export class AiMlController {
   }
 
   // Endpoint to translate language
+  @Public()
   @Post('translate')
   translateLanguage(@Body() translate: TranslateDto) {
     return this.aiMlService.translateLanguage(translate);
