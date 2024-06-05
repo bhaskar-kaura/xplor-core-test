@@ -1,8 +1,8 @@
-/* eslint-disable no-console */
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { TranslateDto } from '../dto/translate';
 import { ConfigService } from '@nestjs/config';
+
+import { TranslateDto } from '../dto/translate';
 import { extractKeys } from '../extract-keys/extract-keys';
 import {
   KeysFromItems,
@@ -10,9 +10,11 @@ import {
   keysFromRetail,
   keysFromScholarship,
 } from '../../constants/keys-to-translate/translate';
+import { Endpoints } from '../../constants/endpoint';
 
 @Injectable()
 export class TranslateService {
+  private readonly logger: Logger = new Logger(TranslateService.name);
   private readonly serverDefaultLanguage: string;
   constructor(private readonly configService: ConfigService, private readonly httpService: HttpService) {
     this.serverDefaultLanguage = this.configService.get('serverDefaultLanguage');
@@ -20,13 +22,15 @@ export class TranslateService {
 
   async translateLanguage(translateDto: TranslateDto) {
     try {
-      const url = (this.configService.get('LANGUAGE_SERVICE_URL') + `/translate`).replaceAll(' ', '');
+      const url = (this.configService.get('LANGUAGE_SERVICE_URL') + Endpoints.translateLanguageUrl).replaceAll(' ', '');
       if (translateDto.to_ln === translateDto.from_ln) {
         return translateDto.text;
       }
 
+      this.logger.log('translateDto=============', JSON.stringify(translateDto));
       return (await this.httpService.axiosRef.post(url, translateDto))?.data?.translated_text;
     } catch (error) {
+      this.logger.error('error in translateLanguage', error);
       throw error?.response?.data;
     }
   }
@@ -34,29 +38,45 @@ export class TranslateService {
     try {
       return await Promise.all(
         data.map(async (value: any) => {
-          // console.log('value', value);
+          // this.logger.log('value', value);
           const clonedValue = JSON.parse(JSON.stringify(value));
           const keysToTranslate: any = extractKeys(clonedValue, keys);
+          this.logger.log('keysToTranslate', keysToTranslate);
           const response = await this.translateLanguage({
             to_ln: targetLanguageCode,
             from_ln: this.serverDefaultLanguage,
             text: keysToTranslate,
           });
-          console.log('translateLanguage response', response);
-          console.log('Object.assign(clonedValue, response)', JSON.stringify(Object.assign(clonedValue, response)));
+          this.logger.log('translateLanguage response', response);
+          this.logger.log('Object.assign(clonedValue, response)', JSON.stringify(Object.assign(clonedValue, response)));
           return Object.assign(clonedValue, response);
         }),
       );
     } catch (error) {
+      this.logger.error(error?.response?.data);
       error.response.data.targetLanguageCode = targetLanguageCode;
       throw error?.response?.data;
     }
   }
 
+  async translateNestedArrayObjectPayload(data: any[], keysToTranslate: string[], targetLanguageCode: string) {
+    return await Promise.all(
+      data.map(async (value) => {
+        const flattenedDataList = this.extractKeysAndValues(value, keysToTranslate);
+
+        const translatedData = await this.translateLanguage({
+          to_ln: targetLanguageCode,
+          from_ln: this.serverDefaultLanguage,
+          text: flattenedDataList,
+        });
+        const updatedItemsData = this.updateDataWithExtractedValues(value, translatedData);
+
+        return updatedItemsData;
+      }),
+    );
+  }
   async translateItemPayload(data: any, targetLanguageCode: string) {
     try {
-      // eslint-disable-next-line no-console
-      // console.log(data);
       if (data?.course.message) {
         if (data?.course?.message?.catalog?.providers) {
           const providersArray = data?.course?.message?.catalog?.providers;
@@ -64,19 +84,19 @@ export class TranslateService {
             providersArray.map(async (provider) => {
               return await Promise.all(
                 provider.items.map(async (value: any) => {
-                  // console.log('value=====================', JSON.stringify(value), '==================value');
+                  // this.logger.log('value=====================', JSON.stringify(value), '==================value');
                   const flattenedDataList = this.extractKeysAndValues(value, KeysFromItems);
-                  // console.log('flattenedDataList', flattenedDataList);
+                  // this.logger.log('flattenedDataList', flattenedDataList);
 
                   const translatedData = await this.translateLanguage({
                     to_ln: targetLanguageCode,
                     from_ln: this.serverDefaultLanguage,
                     text: flattenedDataList,
                   });
-                  // console.log(translatedData);
+                  // this.logger.log(translatedData);
 
                   const updatedItemsData = this.updateDataWithExtractedValues(value, translatedData);
-                  // console.log(
+                  // this.logger.log(
                   //   'updatedItemsData====================',
                   //   JSON.stringify(updatedItemsData),
                   //   '====================updatedItemsData',
@@ -87,7 +107,7 @@ export class TranslateService {
             }),
           );
           const updatedProvidersItems = updateProvidersItems;
-          // console.log(
+          // this.logger.log(
           //   'updateProvidersItems==========================',
           //   updatedProvidersItems,
           //   '==============================updateProvidersItems',
@@ -108,27 +128,27 @@ export class TranslateService {
       }
 
       if (data?.scholarship?.message) {
-        // console.log('data.scholarship', data.scholarship)
+        // this.logger.log('data.scholarship', data.scholarship)
         if (data?.scholarship?.message?.catalog?.providers) {
           const providersArray = data?.scholarship?.message?.catalog?.providers;
           const updateProvidersItems = await Promise.all(
             providersArray.map(async (provider) => {
               return await Promise.all(
                 provider.items.map(async (value: any) => {
-                  // console.log('value=====================', JSON.stringify(value), '==================value');
-                  // console.log('keysFromScholarship', keysFromScholarship)
+                  // this.logger.log('value=====================', JSON.stringify(value), '==================value');
+                  // this.logger.log('keysFromScholarship', keysFromScholarship)
                   const flattenedDataList = this.extractKeysAndValues(value, keysFromScholarship);
-                  // console.log('flattenedDataList', flattenedDataList);
+                  // this.logger.log('flattenedDataList', flattenedDataList);
 
                   const translatedData = await this.translateLanguage({
                     to_ln: targetLanguageCode,
                     from_ln: this.serverDefaultLanguage,
                     text: flattenedDataList,
                   });
-                  // console.log(translatedData);
+                  // this.logger.log(translatedData);
 
                   const updatedItemsData = this.updateDataWithExtractedValues(value, translatedData);
-                  // console.log(
+                  // this.logger.log(
                   //   'updatedItemsData====================',
                   //   JSON.stringify(updatedItemsData),
                   //   '====================updatedItemsData',
@@ -139,7 +159,7 @@ export class TranslateService {
             }),
           );
           const updatedProvidersItems = updateProvidersItems;
-          // console.log(
+          // this.logger.log(
           //   'updateProvidersItems==========================',
           //   updatedProvidersItems,
           //   '==============================updateProvidersItems',
@@ -160,27 +180,26 @@ export class TranslateService {
       }
 
       if (data?.job?.message) {
-        // console.log('Job:::::::::', data?.job);
         if (data?.job?.message?.catalog?.providers) {
           const providersArray = data?.job?.message?.catalog?.providers;
           const updateProvidersItems = await Promise.all(
             providersArray.map(async (provider) => {
               return await Promise.all(
                 provider.items.map(async (value: any) => {
-                  // console.log('value=====================', JSON.stringify(value), '==================value');
-                  // console.log('keysFromScholarship', keysFromScholarship)
+                  // this.logger.log('value=====================', JSON.stringify(value), '==================value');
+                  // this.logger.log('keysFromScholarship', keysFromScholarship)
                   const flattenedDataList = this.extractKeysAndValues(value, keysFromJob);
-                  // console.log('flattenedDataList', flattenedDataList);
+                  // this.logger.log('flattenedDataList', flattenedDataList);
 
                   const translatedData = await this.translateLanguage({
                     to_ln: targetLanguageCode,
                     from_ln: this.serverDefaultLanguage,
                     text: flattenedDataList,
                   });
-                  // console.log(translatedData);
+                  // this.logger.log(translatedData);
 
                   const updatedItemsData = this.updateDataWithExtractedValues(value, translatedData);
-                  // console.log(
+                  // this.logger.log(
                   //   'updatedItemsData====================',
                   //   JSON.stringify(updatedItemsData),
                   //   '====================updatedItemsData',
@@ -191,7 +210,7 @@ export class TranslateService {
             }),
           );
           const updatedProvidersItems = updateProvidersItems;
-          // console.log(
+          // this.logger.log(
           //   'updateProvidersItems==========================',
           //   updatedProvidersItems,
           //   '==============================updateProvidersItems',
@@ -218,19 +237,19 @@ export class TranslateService {
             providersArray.map(async (provider) => {
               return await Promise.all(
                 provider.items.map(async (value: any) => {
-                  // console.log('value=====================', JSON.stringify(value), '==================value');
+                  // this.logger.log('value=====================', JSON.stringify(value), '==================value');
                   const flattenedDataList = this.extractKeysAndValues(value, keysFromRetail);
-                  // console.log('flattenedDataList', flattenedDataList);
+                  // this.logger.log('flattenedDataList', flattenedDataList);
 
                   const translatedData = await this.translateLanguage({
                     to_ln: targetLanguageCode,
                     from_ln: this.serverDefaultLanguage,
                     text: flattenedDataList,
                   });
-                  // console.log(translatedData);
+                  // this.logger.log(translatedData);
 
                   const updatedItemsData = this.updateDataWithExtractedValues(value, translatedData);
-                  // console.log(
+                  // this.logger.log(
                   //   'updatedItemsData====================',
                   //   JSON.stringify(updatedItemsData),
                   //   '====================updatedItemsData',
@@ -241,7 +260,7 @@ export class TranslateService {
             }),
           );
           const updatedProvidersItems = updateProvidersItems;
-          // console.log(
+          // this.logger.log(
           //   'updateProvidersItems==========================',
           //   updatedProvidersItems,
           //   '==============================updateProvidersItems',
@@ -261,6 +280,7 @@ export class TranslateService {
         }
       }
     } catch (error) {
+      this.logger.error(error?.message);
       return error?.message;
     }
   }

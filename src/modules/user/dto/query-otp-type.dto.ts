@@ -1,4 +1,5 @@
 import { IsEnum, IsOptional } from 'class-validator';
+
 import OTP_TYPE from '../../../common/enums/otp-type';
 
 export class QueryOtpTypeDto {

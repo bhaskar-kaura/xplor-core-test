@@ -65,6 +65,9 @@ export interface ICreateKycDto {
   // The gender of the user
   gender: string;
 
+  // The dob of the user
+  dob: string;
+
   // The ID of the wallet
   walletId?: string;
 

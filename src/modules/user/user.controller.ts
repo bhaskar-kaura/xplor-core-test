@@ -12,6 +12,7 @@ import {
   CreateLanguageDto,
   CreateUserDto,
   QueryOtpTypeDto,
+  QueryUserProfile,
   ResetMpinDto,
   UpdateDevicePreferenceDto,
 } from './dto';
@@ -82,8 +83,8 @@ export class UserController {
 
   // Endpoint to get user details
   @Get()
-  getUser(@ExtractToken() token: string) {
-    return this.userService.findOne(token);
+  getUser(@ExtractToken() token: string, @Query() query: QueryUserProfile) {
+    return this.userService.findOne(token, query);
   }
 
   // Endpoint to create MPIN

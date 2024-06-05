@@ -40,6 +40,8 @@ export const Endpoints = {
   deleteDeviceLanguageUrl: '/api/v1/language-preference',
   getRegionLanguageUrl: '/api/v1/language-preference/region',
   updateUserLanguagePreferenceUrl: '/api/v1/user/language-preference',
+  getDomainsUrl: '/api/v1/user/domains',
+  getCategoriesUrl: '/api/v1/user/categories',
 
   //User Service for Device Preference
   deviceLanguagePreference: '/api/v1/device-preference',

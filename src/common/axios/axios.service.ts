@@ -14,13 +14,13 @@ export class AxiosService {
    * @returns The response data from the GET request.
    */
   async get(url: string, params?: any, headers?: any) {
-    try {
-      // Perform the GET request using the HttpService's axiosRef
-      return await this.httpService.axiosRef.get(url, { params, headers });
-    } catch (error) {
-      // Log the error using the GrafanaLoggerService
-      // Note: The error is not thrown or handled here, which might be a design decision
-    }
+    // try {
+    // Perform the GET request using the HttpService's axiosRef
+    return await this.httpService.axiosRef.get(url, { params, headers });
+    // } catch (error) {
+    //   // Log the error using the GrafanaLoggerService
+    //   // Note: The error is not thrown or handled here, which might be a design decision
+    // }
   }
 
   /**
@@ -33,14 +33,14 @@ export class AxiosService {
    * @throws Throws the error if the POST request fails.
    */
   async post(url: string, data: any, headers?: any) {
-    try {
-      // Perform the POST request using the HttpService's axiosRef
-      return (await this.httpService.axiosRef.post(url, data, { headers }))?.data;
-    } catch (error) {
-      // Log the error using the GrafanaLoggerService with a specific message for POST requests
-      // Rethrow the error to be handled by the caller
-      throw error.response;
-    }
+    // try {
+    // Perform the POST request using the HttpService's axiosRef
+    return (await this.httpService.axiosRef.post(url, data, { headers }))?.data;
+    // } catch (error) {
+    //   // Log the error using the GrafanaLoggerService with a specific message for POST requests
+    //   // Rethrow the error to be handled by the caller
+    //   throw error.response;
+    // }
   }
 
   /**
@@ -53,14 +53,14 @@ export class AxiosService {
    * @throws Throws the error if the PUT request fails.
    */
   async put(url: string, data: any, headers?: any) {
-    try {
-      // Perform the PUT request using the HttpService's axiosRef
-      return await this.httpService.axiosRef.put(url, data, { headers });
-    } catch (error) {
-      // Log the error using the GrafanaLoggerService with a specific message for PUT requests
-      // Return the error instead of throwing it, which might be a design decision
-      return error;
-    }
+    // try {
+    // Perform the PUT request using the HttpService's axiosRef
+    return await this.httpService.axiosRef.put(url, data, { headers });
+    // } catch (error) {
+    //   // Log the error using the GrafanaLoggerService with a specific message for PUT requests
+    //   // Return the error instead of throwing it, which might be a design decision
+    //   return error;
+    // }
   }
 
   /**
@@ -73,13 +73,13 @@ export class AxiosService {
    * @throws Throws the error if the DELETE request fails.
    */
   async delete(url: string, params?: any, headers?: any) {
-    try {
-      // Perform the DELETE request using the HttpService's axiosRef
-      return await this.httpService.axiosRef.delete(url, { params, headers });
-    } catch (error) {
-      // Log the error using the GrafanaLoggerService with a specific message for DELETE requests
-      // Return the error instead of throwing it, which might be a design decision
-      return error;
-    }
+    // try {
+    // Perform the DELETE request using the HttpService's axiosRef
+    return await this.httpService.axiosRef.delete(url, { params, headers });
+    // } catch (error) {
+    //   // Log the error using the GrafanaLoggerService with a specific message for DELETE requests
+    //   // Return the error instead of throwing it, which might be a design decision
+    //   return error;
+    // }
   }
 }

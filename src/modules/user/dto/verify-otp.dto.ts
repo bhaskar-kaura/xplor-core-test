@@ -1,5 +1,5 @@
 // Data Transfer Object (DTO) for verifying OTP (One-Time Password)
-import { IsOptional } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class VerifyOtpDto {
   // Optional key field used to identify the user or operation for OTP verification
@@ -15,4 +15,8 @@ export class VerifyOtpDto {
 
   @IsOptional()
   targetLanguageCode?: string;
+
+  @IsOptional()
+  @IsString()
+  countryCode?: string;
 }

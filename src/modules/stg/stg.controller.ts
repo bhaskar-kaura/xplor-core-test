@@ -1,7 +1,6 @@
-/* eslint-disable no-console */
 import { StgService } from './services/stg.service';
 import { SearchRequestDto } from './dto/search-request.dto';
-import { Body, Controller, Get, Injectable, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Injectable, Logger, Post, Req, Res } from '@nestjs/common';
 import { Public } from '../../common/decorators/public.decorators';
 import { SseConnectedMessage } from '../../common/constants/response-message';
 import { SelectRequestDto } from './dto/select-request.dto';
@@ -12,6 +11,7 @@ import { StatusRequestDto } from './dto/status-request.dto';
 @Controller('stg')
 @Injectable()
 export class StgController {
+  private readonly logger: Logger = new Logger(StgController.name);
   private connectedClients: Map<string, any> = new Map();
 
   constructor(private readonly stgService: StgService) {
@@ -29,26 +29,25 @@ export class StgController {
   @Public()
   @Post('select')
   select(@Body() selectRequestDto: SelectRequestDto) {
-    console.log('select', selectRequestDto);
+    this.logger.debug('selectRequestDto', selectRequestDto);
     return this.stgService.select(selectRequestDto);
   }
 
-  @Public()
   @Post('init')
   init(@Body() initRequestDto: InitRequestDto) {
+    this.logger.debug('initRequestDto', initRequestDto);
     return this.stgService.init(initRequestDto);
   }
 
-  @Public()
   @Post('confirm')
   confirm(@Body() confirmRequestDto: ConfirmRequestDto) {
+    this.logger.debug('confirmRequestDto', confirmRequestDto);
     return this.stgService.confirm(confirmRequestDto);
   }
 
-  @Public()
   @Post('status')
   status(@Body() statusRequestDto: StatusRequestDto) {
-    console.log('status', statusRequestDto);
+    this.logger.log('statusRequestDto', statusRequestDto);
     return this.stgService.status(statusRequestDto);
   }
 
@@ -56,7 +55,7 @@ export class StgController {
   @Post('on_search')
   onSearch(@Body() searchResponse: any) {
     // Bind the context of sendDataToClients to this instance
-    console.log('OnSearch00', searchResponse);
+    this.logger.log('OnSearch00', searchResponse);
     return this.stgService.onSearch(searchResponse, this.connectedClients, this.sendDataToClients);
   }
 
@@ -79,6 +78,13 @@ export class StgController {
   onConfirm(@Body() searchResponse: any) {
     // Bind the context of sendDataToClients to this instance
     return this.stgService.onConfirm(searchResponse);
+  }
+
+  @Public()
+  @Post('on_status')
+  onStatus(@Body() searchResponse: any) {
+    // Bind the context of sendDataToClients to this instance
+    return this.stgService.onStatus(searchResponse);
   }
 
   @Public()
@@ -110,17 +116,16 @@ export class StgController {
 
   async sendDataToClients(transaction_id: string, data: any, connectedClients: Map<string, any>): Promise<void> {
     try {
-      console.log('SSEDatareceived', transaction_id);
-      // console.log('connectedClients', connectedClients);
+      this.logger.log('SSEDatareceived', transaction_id);
+      // this.logger.log('connectedClients', connectedClients);
       if (connectedClients.has(transaction_id)) {
-        // eslint-disable-next-line no-console
-        // console.log('sseData', `data: ${JSON.stringify(data)}`);
+        // this.logger.log('sseData', `data: ${JSON.stringify(data)}`);
         connectedClients.get(transaction_id).write(`data: ${JSON.stringify(data)}\n\n`);
       }
 
       return data;
     } catch (error) {
-      // console.log('error', error);
+      // this.logger.log('error', error);
       return error;
     }
   }

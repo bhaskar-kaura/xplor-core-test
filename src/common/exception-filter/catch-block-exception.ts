@@ -1,6 +1,7 @@
 import { Catch, ExceptionFilter, ArgumentsHost, HttpStatus } from '@nestjs/common';
-import { TranslateService } from '../utils/translate/translate.service';
 import { ConfigService } from '@nestjs/config';
+
+import { TranslateService } from '../utils/translate/translate.service';
 
 @Catch()
 export class CatchExceptionsTranslator implements ExceptionFilter {
@@ -10,7 +11,10 @@ export class CatchExceptionsTranslator implements ExceptionFilter {
     const response = ctx.getResponse();
     const getServerDefaultLanguage = this.configService.get<string>('DEFAULT_LANGUAGE').replaceAll(' ', '');
 
-    let translatedMessage: any = exception.message;
+    // eslint-disable-next-line no-console
+    console.log('exception====================================', JSON.stringify(exception));
+
+    let translatedMessage: any = exception?.message;
 
     if (exception.targetLanguageCode && exception.targetLanguageCode !== getServerDefaultLanguage) {
       translatedMessage = await this.translateService.translateLanguage({

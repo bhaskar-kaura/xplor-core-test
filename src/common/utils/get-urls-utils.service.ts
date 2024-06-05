@@ -160,4 +160,10 @@ export class GetUrl extends ConfigService {
 
   // Constructing the URL for checking the status of operations in the IL service.
   getIlOnStatusUrl = this.ilServiceUrl + Endpoints.ilOnStatusUrl;
+
+  // Constructing the URL for getting domains in user service.
+  getDomainsUrl = this.userServiceUrl + Endpoints.getDomainsUrl;
+
+  // Constructing the URL for getting the  categories in user service.
+  getCategoriesUrl = this.userServiceUrl + Endpoints.getCategoriesUrl;
 }

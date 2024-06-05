@@ -1,4 +1,5 @@
 import { CallBackQueryDto } from '../callback-query.dto';
+
 import { validate } from 'class-validator';
 
 describe('CallBackQueryDto', () => {

@@ -2,12 +2,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpModule } from '@nestjs/axios';
 import { APP_GUARD } from '@nestjs/core';
+import { ConfigModule } from '@nestjs/config';
 
 import { CommonModule } from '../common.module';
 import { GetUrl } from '../utils';
 import { UserModule } from '../../modules/user/user.module';
 import { TokenGuard } from '../guard/token.guard';
-import { ConfigModule } from '@nestjs/config';
 
 // Define a test suite for the CommonModule.
 describe('CommonModule', () => {
