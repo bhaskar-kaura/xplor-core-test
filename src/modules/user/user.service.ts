@@ -66,7 +66,7 @@ export class UserService {
       }
 
       if (foundUserData.kyc) {
-        foundUserData.kyc.address = JSON.parse(foundUserData.kyc.address);
+        // foundUserData.kyc.address = JSON.parse(foundUserData.kyc.address);
 
         // const translatedResponse = await this.translateService.translateNestedArrayObjectPayload(
         //   [foundUserData],
