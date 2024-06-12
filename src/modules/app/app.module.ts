@@ -16,6 +16,7 @@ import { GetUrl } from '../../common/utils/get-urls-utils.service';
 import { TokenGuard } from '../../common/guard/token.guard';
 import { AiMlModule } from '../ai-ml/ai-ml.module';
 import { StgModule } from '../stg/stg.module';
+import { JwtModule } from '@nestjs/jwt';
 
 /**
  * AppModule is the root module of the application.
@@ -31,6 +32,7 @@ import { StgModule } from '../stg/stg.module';
         abortEarly: false,
       },
     }),
+    { module: JwtModule, global: true },
     EAuthModule,
     UserModule,
     CommonModule,

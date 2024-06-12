@@ -1,9 +1,17 @@
-import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
 
 export class MessageDto {
   @IsNotEmpty({ message: 'Order id is required' })
   @IsString({ message: 'Order id must be a string' })
   order_id: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  items_id: string[];
+
+  @IsNotEmpty({ message: 'Provider id is required' })
+  @IsString({ message: 'Provider id must be a string' })
+  provider_id: string;
 }
 
 export class ContextDto {

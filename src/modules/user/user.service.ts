@@ -3,6 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { faker } from '@faker-js/faker';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
 import { PhoneNumberDto } from './dto/phone-number.dto';
 import { GetUrl } from '../../common/utils';
@@ -12,6 +13,7 @@ import {
   CreateLanguageDto,
   CreateMPinDto,
   CreateUserDto,
+  KycDetailsDto,
   QueryOtpTypeDto,
   QueryUserProfile,
   UpdateDevicePreferenceDto,
@@ -27,7 +29,6 @@ import {
   KeysForCategories,
   KeysForGetDomain,
   KeysForTitleAndDes,
-  KeysForUserProfileKyc,
 } from '../../common/constants/keys-to-translate/translate';
 import { GetUserService } from '../../common/utils/getUser/get-user';
 import { IUserProfile } from '../../common/interfaces';
@@ -44,6 +45,7 @@ export class UserService {
     private readonly getDeviceService: GetDeviceService,
     private readonly translateService: TranslateService,
     private readonly getUserService: GetUserService,
+    private readonly jwtService: JwtService,
   ) {
     this.serverDefaultLanguage = this.configService.get('serverDefaultLanguage');
   }
@@ -148,17 +150,44 @@ export class UserService {
     }
   }
   // Method to update user KYC
-  async updateUserKyc(token: string) {
+  async updateUserKyc(token: string, kycData: KycDetailsDto) {
     try {
+      const userId = this.jwtService.decode(token.split(' ')[1])?.sub;
+      const organization = this.configService.get('organization');
+      const foundUser = (
+        await this.httpService.axiosRef(this.getUrl.getUserProfileUrl, {
+          headers: { Authorization: token },
+        })
+      )?.data?.data;
+      this.logger.debug('foundUser in updateUserKyc=======', foundUser);
+      // Create a new wallet for the user
+      let createdWalletData: any;
+      if (foundUser.wallet === null) {
+        createdWalletData = (
+          await this.httpService.axiosRef.post(this.getUrl.getWalletUrl, {
+            userId: userId,
+            fullName: kycData.firstName + ' ' + kycData.lastName || '',
+            email: kycData?.email || '',
+            organization: organization,
+          })
+        )?.data;
+        this.logger.debug('createdWalletData', JSON.stringify(createdWalletData));
+      }
+
+      // Extract the wallet ID from the created wallet data
+      const walletId = createdWalletData?.data?._id || foundUser?.wallet;
+
       const user = (
         await this.httpService.axiosRef.patch(
           this.getUrl.updateUserKycUrl,
           {
-            lastName: faker.person.lastName(),
-            firstName: faker.person.firstName(),
-            address: faker.location.streetAddress(),
-            email: faker.internet.email(),
-            gender: faker.person.gender(),
+            lastName: kycData.lastName || faker.person.lastName(),
+            firstName: kycData.firstName || faker.person.firstName(),
+            address: kycData.address || faker.location.streetAddress(),
+            email: kycData.email || faker.internet.email(),
+            gender: kycData.gender || faker.person.gender(),
+            dob: kycData.dob || '01/01/1990',
+            walletId: walletId,
             provider: {
               id: faker.string.uuid(),
               name: faker.person.jobArea(),

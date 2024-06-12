@@ -8,6 +8,7 @@ import { CommonModule } from '../common.module';
 import { GetUrl } from '../utils';
 import { UserModule } from '../../modules/user/user.module';
 import { TokenGuard } from '../guard/token.guard';
+import { JwtModule } from '@nestjs/jwt';
 
 // Define a test suite for the CommonModule.
 describe('CommonModule', () => {
@@ -23,6 +24,7 @@ describe('CommonModule', () => {
         CommonModule,
         HttpModule,
         ConfigModule.forRoot({ isGlobal: true }),
+        { module: JwtModule, global: true },
         { module: HttpModule, global: true },
         UserModule,
       ], // Import the module to be tested
