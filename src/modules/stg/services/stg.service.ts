@@ -46,7 +46,7 @@ export class StgService {
       this.logger.log('selectResponse', selectResponse);
       return selectResponse;
     } catch (error) {
-      this.logger.error(error?.response?.data);
+      this.logger.error(error);
       error.response.data.targetLanguageCode = 'en';
       throw error?.response;
     }

@@ -6,7 +6,7 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { PhoneNumberDto } from './dto/phone-number.dto';
 import { AssignRoleDto } from './dto/assign-role.dto';
-import { CreateMPinDto, QueryOtpTypeDto, VerifyOtpDto } from './dto';
+import { CreateMPinDto, KycDetailsDto, QueryOtpTypeDto, VerifyOtpDto } from './dto';
 import { DeviceIdDto } from '../../../src/common/utils/dto/device-dto';
 
 // Define the test suite for UserController
@@ -224,7 +224,15 @@ describe('UserController', () => {
   describe('updateUserKyc', () => {
     it('should update user KYC', async () => {
       const token = 'mockToken';
-      expect(await controller.updateUserKyc(token)).toEqual(updateRole);
+      const kycData = new KycDetailsDto();
+      kycData.address = faker.string.alphanumeric();
+      kycData.dob = faker.string.numeric();
+      kycData.email = faker.person.fullName();
+      kycData.firstName = faker.person.firstName();
+      kycData.gender = faker.person.gender();
+      kycData.lastName = faker.person.lastName();
+
+      expect(await controller.updateUserKyc(token, kycData)).toEqual(updateRole);
     });
   });
 

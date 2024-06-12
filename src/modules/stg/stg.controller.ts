@@ -75,9 +75,9 @@ export class StgController {
 
   @Public()
   @Post('on_confirm')
-  onConfirm(@Body() searchResponse: any) {
+  onConfirm(@Body() onConfirmResponse: any) {
     // Bind the context of sendDataToClients to this instance
-    return this.stgService.onConfirm(searchResponse);
+    return this.stgService.onConfirm(onConfirmResponse);
   }
 
   @Public()

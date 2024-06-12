@@ -16,3 +16,4 @@ export * from './create-language.dto';
 export * from './create-device-preference.dto';
 export * from './update-device-preference.dto';
 export * from './query-user-profile.dto';
+export * from './kyc-details.dto';

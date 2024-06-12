@@ -11,6 +11,7 @@ import {
   CreateDevicePreferenceDto,
   CreateLanguageDto,
   CreateUserDto,
+  KycDetailsDto,
   QueryOtpTypeDto,
   QueryUserProfile,
   ResetMpinDto,
@@ -77,8 +78,8 @@ export class UserController {
 
   // Endpoint to update user KYC
   @Patch('kyc')
-  updateUserKyc(@ExtractToken() token: string) {
-    return this.userService.updateUserKyc(token);
+  updateUserKyc(@ExtractToken() token: string, @Body() kycData: KycDetailsDto) {
+    return this.userService.updateUserKyc(token, kycData);
   }
 
   // Endpoint to get user details
