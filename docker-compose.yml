@@ -46,4 +46,4 @@ networks:
     external: true # Indicates that the network is defined outside this file
 
 volumes:
-  mongo-data: # Defines a volume for MongoDB data persistence
+  mongo-data: {} # Defines a volume for MongoDB data persistence
